@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5">
+  <meta name="theme-color" content="#E10514">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>PassportCard Refer - תוכנית חברים מביאים חברים</title>
+  
+  <!-- Preconnect hints for external resources (performance optimization) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  
+  <!-- Google Fonts: Rubik (Hebrew support, display=swap for FOIT prevention) -->
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tabler Icons (CDN) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  
+  <!-- Canvas Confetti (deferred for performance) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Skip Navigation Link (Story 6.3 - Accessibility) -->
+  <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
+  
+  <!-- Screen Reader Announcer (Story 6.3 - Accessibility) -->
+  <div id="sr-announcer" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+  
+  <!-- Header Container (fixed at top) -->
+  <div id="header-container"></div>
+  
+  <!-- Navigation Container (bottom nav on mobile, sidebar on desktop) -->
+  <div id="nav-container"></div>
+  
+  <!-- Main Application Container -->
+  <main id="main-content" role="main" tabindex="-1" class="app-layout"></main>
+  
+  <!-- Toast Notifications Container -->
+  <div id="toast-container" aria-live="polite" aria-atomic="false"></div>
+  
+  <!-- Modal Container -->
+  <div id="modal-container"></div>
+  
+  <!-- Application Script -->
+  <script src="script.js"></script>
+</body>
+</html>
+
