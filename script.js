@@ -122,22 +122,60 @@ function safeGetStorage(key) {
   return null;
 }
 
+/* ============================================================================
+   ICON UTILITY - Story 7.8
+   ============================================================================
+   Consistent icon rendering using Tabler Icons
+   ========================================================================== */
+
+/**
+ * Renders a Tabler icon element consistently across the application
+ * @param {string} iconName - Tabler icon name (without 'ti-' prefix)
+ * @param {Object} options - Optional configuration
+ * @param {string} options.className - Additional CSS classes
+ * @param {string} options.ariaLabel - Accessible label for meaningful icons
+ * @param {boolean} options.ariaHidden - Whether icon is decorative (default: true)
+ * @param {string} options.size - Size class: 'sm', 'md', 'lg', 'xl'
+ * @returns {string} HTML string for the icon element
+ */
+function renderIcon(iconName, options = {}) {
+  const { 
+    className = '', 
+    ariaLabel = '', 
+    ariaHidden = true,
+    size = ''
+  } = options;
+  
+  const sizeClass = size ? `icon--${size}` : '';
+  const classes = ['ti', `ti-${iconName}`, sizeClass, className]
+    .filter(Boolean)
+    .join(' ');
+  
+  const ariaAttr = ariaHidden 
+    ? 'aria-hidden="true"' 
+    : `aria-label="${ariaLabel}" role="img"`;
+  
+  return `<i class="${classes}" ${ariaAttr}></i>`;
+}
+
 /**
  * CSS celebration fallback when confetti library fails (Story 6.5 AC7)
- * Creates floating emoji particles using pure CSS animations
+ * Creates floating icon particles using pure CSS animations
  */
 function showCSSCelebration() {
   const container = document.createElement('div');
   container.className = 'css-celebration';
   container.setAttribute('aria-hidden', 'true');
   
-  const emojis = ['🎉', '⭐', '✨', '🌟', '💫', '🎊'];
+  // Use Tabler icons instead of emojis for consistent cross-browser rendering
+  const celebrationIcons = ['confetti', 'star-filled', 'sparkles', 'stars', 'meteor', 'party-popper'];
   const particleCount = 20;
   
   for (let i = 0; i < particleCount; i++) {
     const particle = document.createElement('span');
     particle.className = 'css-celebration__particle';
-    particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    const iconName = celebrationIcons[Math.floor(Math.random() * celebrationIcons.length)];
+    particle.innerHTML = `<i class="ti ti-${iconName}"></i>`;
     particle.style.setProperty('--x', `${Math.random() * 100}vw`);
     particle.style.setProperty('--delay', `${Math.random() * 0.5}s`);
     particle.style.setProperty('--duration', `${1 + Math.random() * 1}s`);
@@ -163,7 +201,7 @@ function safeCelebrate(options = {}) {
     // Show static celebration for accessibility
     const toast = document.createElement('div');
     toast.className = 'celebration-toast';
-    toast.textContent = '🎉 מזל טוב!';
+    toast.innerHTML = `${renderIcon('confetti')} מזל טוב!`;
     toast.setAttribute('role', 'status');
     toast.setAttribute('aria-live', 'polite');
     document.body.appendChild(toast);
@@ -282,6 +320,14 @@ const CONFIG = {
   // Demo OTP code for authentication
   OTP_CODE: '000000',
   
+  // PassportCard logo assets (Story 7.2)
+  LOGOS: {
+    // Standard logo for light backgrounds
+    STANDARD: 'https://www.passportcard.co.il/wp-content/uploads/2023/07/logo.svg',
+    // White logo for dark/red backgrounds
+    WHITE: 'https://www.passportcard.co.il/wp-content/uploads/2023/07/logo-m.svg'
+  },
+  
   // Application routes with page mapping for multi-page architecture
   ROUTES: {
     auth: { component: 'LoginComponent', requiresAuth: false, page: 'login' },
@@ -350,7 +396,6 @@ const STAMP_TYPES = {
     label: 'קו״ח הוגש',
     labelEn: 'Resume Submitted',
     icon: 'file-text',
-    emoji: '📄',
     color: '#0984E3',
     shape: 'circle',
     points: 50,
@@ -361,7 +406,6 @@ const STAMP_TYPES = {
     label: 'ראיון נקבע',
     labelEn: 'Interview Scheduled',
     icon: 'calendar-event',
-    emoji: '📅',
     color: '#F39C12',
     shape: 'rectangle',
     points: 100,
@@ -372,7 +416,6 @@ const STAMP_TYPES = {
     label: 'גיוס מוצלח!',
     labelEn: 'Candidate Hired',
     icon: 'check',
-    emoji: '✓',
     color: '#00B894',
     shape: 'star',
     points: 500,
@@ -383,7 +426,6 @@ const STAMP_TYPES = {
     label: '3 חודשים',
     labelEn: '3-Month Milestone',
     icon: 'medal',
-    emoji: '🏅',
     color: '#95A5A6',
     shape: 'badge',
     points: 200,
@@ -394,7 +436,6 @@ const STAMP_TYPES = {
     label: '6 חודשים',
     labelEn: '6-Month Milestone',
     icon: 'trophy',
-    emoji: '🏆',
     color: '#F1C40F',
     shape: 'badge',
     points: 400,
@@ -405,7 +446,6 @@ const STAMP_TYPES = {
     label: 'קמפיין מיוחד',
     labelEn: 'Special Campaign',
     icon: 'bolt',
-    emoji: '⚡',
     color: '#6C5CE7',
     shape: 'diamond',
     points: 75,
@@ -416,7 +456,6 @@ const STAMP_TYPES = {
     label: 'רצף הפניות',
     labelEn: 'Referral Streak',
     icon: 'flame',
-    emoji: '🔥',
     color: '#E10514',
     shape: 'flame',
     points: 75,
@@ -427,7 +466,6 @@ const STAMP_TYPES = {
     label: 'הפניה ראשונה',
     labelEn: 'First Referral',
     icon: 'heart',
-    emoji: '💖',
     color: '#FD79A8',
     shape: 'heart',
     points: 100,
@@ -444,37 +482,37 @@ const STAMP_TYPES = {
 const REFERRAL_STATUS_CONFIG = {
   submitted: { 
     hebrew: 'הוגש', 
-    icon: '📩', 
+    icon: 'mail', 
     color: '#0984E3',
     filterGroup: 'in-progress'
   },
   review: { 
     hebrew: 'בבדיקה', 
-    icon: '👀', 
+    icon: 'eye', 
     color: '#F39C12',
     filterGroup: 'in-progress'
   },
   interview: { 
     hebrew: 'בראיון', 
-    icon: '📞', 
+    icon: 'phone-call', 
     color: '#6C5CE7',
     filterGroup: 'in-progress'
   },
   offer: { 
     hebrew: 'הצעה', 
-    icon: '📝', 
+    icon: 'file-description', 
     color: '#00B894',
     filterGroup: 'in-progress'
   },
   hired: { 
     hebrew: 'גויס!', 
-    icon: '🎉', 
+    icon: 'confetti', 
     color: '#22C55E',
     filterGroup: 'hired'
   },
   rejected: { 
     hebrew: 'לא נבחר', 
-    icon: '❌', 
+    icon: 'x', 
     color: '#95A5A6',
     filterGroup: 'rejected'
   }
@@ -943,7 +981,7 @@ const MOCK_CAMPAIGNS = [
     title: 'שבוע HR מיוחד',
     description: 'בונוס 1.5 על כל הפניה למשאבי אנוש',
     multiplier: 1.5,
-    icon: '👥',
+    icon: 'users',
     startDate: '2025-12-08T00:00:00Z',
     endDate: '2025-12-15T23:59:59Z',
     eligibleDepartments: ['HR', 'משאבי אנוש'],
@@ -1874,7 +1912,7 @@ class AnimationService {
     this.announceToScreenReader('מזל טוב! גיוס מוצלח!');
     
     if (this._reducedMotion) {
-      this._showStaticCelebration('מזל טוב! גיוס מוצלח! 🎉');
+      this._showStaticCelebration('מזל טוב! גיוס מוצלח!');
       return;
     }
 
@@ -1929,7 +1967,7 @@ class AnimationService {
     this.announceToScreenReader('ברכות על ההפניה הראשונה!');
     
     if (this._reducedMotion) {
-      this._showStaticCelebration('ברכות על ההפניה הראשונה! 💖');
+      this._showStaticCelebration('ברכות על ההפניה הראשונה!');
       return;
     }
 
@@ -1952,7 +1990,7 @@ class AnimationService {
     });
 
     // Show congratulatory message
-    this._showCelebrationMessage('ברכות על ההפניה הראשונה! 💖');
+    this._showCelebrationMessage('ברכות על ההפניה הראשונה!');
 
     // Auto-dismiss after 3 seconds
     setTimeout(() => {
@@ -1973,7 +2011,7 @@ class AnimationService {
     this.announceToScreenReader(srMessage);
     
     if (this._reducedMotion) {
-      const message = config ? `${config.emoji} ${config.label}!` : 'הישג חדש! 🎉';
+      const message = config ? `${config.label}!` : 'הישג חדש!';
       this._showStaticCelebration(message);
       return;
     }
@@ -2014,9 +2052,7 @@ class AnimationService {
    */
   _showFallbackCelebration(stampType) {
     const config = STAMP_TYPES[stampType] || {};
-    const message = config.emoji ?
-      `${config.emoji} ${config.label || 'הישג חדש'}!` :
-      'הישג חדש! 🎉';
+    const message = config.label ? `${config.label}!` : 'הישג חדש!';
 
     // Show special toast with animation
     this._showAnimatedToast(message, config.color || '#00B894');
@@ -2098,7 +2134,7 @@ class AnimationService {
     toast.setAttribute('role', 'alert');
     toast.innerHTML = `
       <span class="toast__message">${message}</span>
-      <span class="toast__sparkle" aria-hidden="true">✨</span>
+      <span class="toast__sparkle" aria-hidden="true">${renderIcon('sparkles')}</span>
     `;
 
     container.appendChild(toast);
@@ -2435,11 +2471,8 @@ class LoginComponent extends Component {
     return `
       <div class="login-screen">
         <div class="login-hero">
-          <div class="login-logo">
-            <svg viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <rect width="120" height="40" rx="4" fill="white" fill-opacity="0.15"/>
-              <text x="60" y="26" text-anchor="middle" fill="white" font-family="Rubik, sans-serif" font-weight="600" font-size="14">PassportCard</text>
-            </svg>
+          <div class="login-logo" role="img" aria-label="PassportCard">
+            <img src="${CONFIG.LOGOS.WHITE}" alt="" aria-hidden="true" class="login-logo__img" />
           </div>
           <h1 class="login-title">ברוכים הבאים ל-PassportCard Refer</h1>
           <p class="login-subtitle">מערכת ההפניות שלך</p>
@@ -2453,9 +2486,9 @@ class LoginComponent extends Component {
                 type="text" 
                 id="email-input"
                 class="${inputClasses}"
-                placeholder="firstname.lastname"
+                placeholder="firstname.lastname@passportcard.co.il"
                 aria-label="הזינו את כתובת האימייל שלכם"
-                aria-describedby="email-error"
+                aria-describedby="email-error email-suggestion-hint"
                 aria-invalid="${errorMessage ? 'true' : 'false'}"
                 autocomplete="email"
                 autocapitalize="off"
@@ -2464,9 +2497,16 @@ class LoginComponent extends Component {
                 value="${email}"
                 ${inputDisabled}
               >
-              <span class="email-suggestion ${showSuggestion && !email.includes('@') ? 'email-suggestion--visible' : ''}" aria-hidden="true">
-                ${showSuggestion && email && !email.includes('@') ? email + '@passportcard.co.il' : '@passportcard.co.il'}
-              </span>
+              <div 
+                class="email-suggestion ${showSuggestion && email && !email.includes('@') ? 'email-suggestion--visible' : ''}" 
+                id="email-suggestion-hint"
+                role="button"
+                tabindex="${showSuggestion && email && !email.includes('@') ? '0' : '-1'}"
+                aria-label="לחץ להשלמת האימייל"
+              >
+                <span class="email-suggestion__hint">לחץ Tab להשלמה:</span>
+                <span class="email-suggestion__text">${email}@passportcard.co.il</span>
+              </div>
             </div>
             <div id="email-error" class="form-error" aria-live="polite" role="alert">
               ${errorMessage}
@@ -2517,10 +2557,11 @@ class LoginComponent extends Component {
       emailInput.addEventListener('keydown', this._boundHandleKeydown);
     }
     
-    // Bind click on suggestion
+    // Bind click and keyboard on suggestion
     const suggestion = this.$('.email-suggestion');
     if (suggestion) {
       suggestion.addEventListener('click', this._handleSuggestionClick.bind(this));
+      suggestion.addEventListener('keydown', this._handleSuggestionKeydown.bind(this));
     }
   }
 
@@ -2539,6 +2580,24 @@ class LoginComponent extends Component {
    * Handles click on email suggestion to accept it
    */
   _handleSuggestionClick() {
+    this._acceptSuggestion();
+  }
+
+  /**
+   * Handles keyboard activation on email suggestion (Enter/Space)
+   * @param {KeyboardEvent} e - Keydown event
+   */
+  _handleSuggestionKeydown(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      this._acceptSuggestion();
+    }
+  }
+
+  /**
+   * Accepts the email suggestion and updates the input
+   */
+  _acceptSuggestion() {
     if (this.state.showSuggestion && !this.state.email.includes('@') && this.state.email.length > 0) {
       const fullEmail = this.state.email + '@passportcard.co.il';
       this._updateEmailState(fullEmail);
@@ -2772,11 +2831,8 @@ class SidebarNavComponent extends Component {
     return `
       <aside class="sidebar-nav" aria-label="ניווט ראשי">
         <div class="sidebar-nav__brand">
-          <div class="sidebar-nav__logo" data-navigate="dashboard" role="button" tabindex="0">
-            <span class="sidebar-nav__logo-icon">
-              <i class="ti ti-plane-departure"></i>
-            </span>
-            <span class="sidebar-nav__logo-text">PassportCard Refer</span>
+          <div class="sidebar-nav__logo" data-navigate="dashboard" role="button" tabindex="0" aria-label="PassportCard - לדשבורד">
+            <img src="${CONFIG.LOGOS.STANDARD}" alt="" aria-hidden="true" class="sidebar-nav__logo-img" />
           </div>
         </div>
         
@@ -2864,11 +2920,8 @@ class HeaderComponent extends Component {
     
     return `
       <header class="header">
-        <div class="header__logo" data-navigate="dashboard" role="button" tabindex="0" aria-label="חזור לדשבורד">
-          <span class="header__logo-icon">
-            <i class="ti ti-plane-departure"></i>
-          </span>
-          <span class="header__logo-text">PassportCard Refer</span>
+        <div class="header__logo" data-navigate="dashboard" role="button" tabindex="0" aria-label="PassportCard - חזור לדשבורד">
+          <img src="${CONFIG.LOGOS.WHITE}" alt="" aria-hidden="true" class="header__logo-img" />
         </div>
         
         <h1 class="header__title">${this._pageTitles[currentView] || ''}</h1>
@@ -3046,6 +3099,47 @@ function seededRandom(seed) {
     state = (state * 1103515245 + 12345) & 0x7fffffff;
     return state / 0x7fffffff;
   };
+}
+
+/**
+ * Generate a simulated Israeli mobile phone number from a seed (Story 7.4 AC#1, AC#5)
+ * Same email always produces identical phone number (deterministic)
+ * @param {string} seed - User's email or name for deterministic generation
+ * @returns {string} Phone number in format '05X-XXX-XXXX'
+ */
+function generatePhoneNumber(seed) {
+  const random = seededRandom(seed);
+  
+  // Israeli mobile prefixes: 050, 052, 053, 054, 055, 058
+  const prefixes = ['050', '052', '053', '054', '055', '058'];
+  const prefix = prefixes[Math.floor(random() * prefixes.length)];
+  
+  // Generate remaining 7 digits
+  const digits = [];
+  for (let i = 0; i < 7; i++) {
+    digits.push(Math.floor(random() * 10));
+  }
+  
+  // Format as 05X-XXX-XXXX
+  return `${prefix}-${digits.slice(0, 3).join('')}-${digits.slice(3).join('')}`;
+}
+
+/**
+ * Mask a phone number for privacy display (Story 7.4 AC#1)
+ * Shows only first 2 digits and last 2 digits
+ * @param {string} phone - Full phone number '052-123-4567'
+ * @returns {string} Masked phone '05*-***-**67'
+ */
+function maskPhoneNumber(phone) {
+  // Keep prefix (05), mask middle, show last 2 digits
+  const parts = phone.split('-');
+  if (parts.length !== 3) return phone;
+  
+  const prefix = parts[0].substring(0, 2) + '*';  // '05*'
+  const middle = '***';
+  const lastPart = '**' + parts[2].slice(-2);     // '**67'
+  
+  return `${prefix}-${middle}-${lastPart}`;
 }
 
 // ============================================
@@ -3611,7 +3705,7 @@ function generateActivitiesFromReferrals(referrals, random) {
     },
     'hired': {
       type: ACTIVITY_TYPES.STATUS_CHANGE,
-      descTemplate: '🎉 {{name}} גויס/ה בהצלחה!',
+      descTemplate: '{{name}} גויס/ה בהצלחה!',
       points: 500,
       icon: 'ti-trophy',
       iconColor: 'success'
@@ -3753,14 +3847,14 @@ function generateMockCampaigns(random) {
   const campaignTemplates = [
     {
       id: 'camp-001',
-      name: '🔥 סופר בולס מפתחים!',
+      name: 'סופר בולס מפתחים!',
       description: 'נקודות כפולות על כל הפניה לתפקידי פיתוח! הזדמנות מוגבלת בזמן.',
       multiplier: 2,
       eligibleDepartments: ['פיתוח'],
       eligiblePositionIds: ['pos-001', 'pos-006', 'pos-009', 'pos-011'],
       badgeColor: 'primary',
       icon: 'ti-code',
-      badgeText: '🎁 x2 נקודות!',
+      badgeText: '<i class="ti ti-gift" aria-hidden="true"></i> x2 נקודות!',
       accentColor: '#6C5CE7'
     },
     {
@@ -3772,19 +3866,19 @@ function generateMockCampaigns(random) {
       eligiblePositionIds: ['pos-003', 'pos-012'],
       badgeColor: 'success',
       icon: 'ti-speakerphone',
-      badgeText: '⚡ x1.5 נקודות!',
+      badgeText: '<i class="ti ti-bolt" aria-hidden="true"></i> x1.5 נקודות!',
       accentColor: '#00B894'
     },
     {
       id: 'camp-003',
-      name: '💫 שבוע הבונוסים',
+      name: 'שבוע הבונוסים',
       description: 'כל הפניה שווה בונוס! לא משנה לאיזו משרה.',
       multiplier: 1.5,
       eligibleDepartments: [], // All departments
       eligiblePositionIds: [], // All positions
       badgeColor: 'warning',
       icon: 'ti-stars',
-      badgeText: '✨ בונוס מיוחד!',
+      badgeText: '<i class="ti ti-sparkles" aria-hidden="true"></i> בונוס מיוחד!',
       accentColor: '#F39C12'
     }
   ];
@@ -3917,6 +4011,9 @@ class OTPModalComponent extends Component {
   template() {
     const email = stateManager.getState('pendingEmail') || '';
     const maskedEmail = this._maskEmail(email);
+    // Story 7.4: Generate deterministic phone number from email
+    const phoneNumber = generatePhoneNumber(email);
+    const maskedPhone = maskPhoneNumber(phoneNumber);
 
     return `
       <div class="otp-modal-overlay" data-action="close-otp-overlay">
@@ -3927,12 +4024,17 @@ class OTPModalComponent extends Component {
           
           <div class="otp-modal__header">
             <div class="otp-modal__icon ${this._isSuccess ? 'otp-modal__icon--success' : ''}">
-              <i class="ti ${this._isSuccess ? 'ti-check otp-success-icon' : 'ti-mail-check'}"></i>
+              <i class="ti ${this._isSuccess ? 'ti-check otp-success-icon' : 'ti-device-mobile'}"></i>
             </div>
             <h2 id="otp-title" class="otp-modal__title">${this._isSuccess ? 'אימות הצליח!' : 'אימות קוד'}</h2>
             <p class="otp-modal__subtitle">
-              ${this._isSuccess ? 'מעביר אותך לדשבורד...' : `שלחנו קוד בן 6 ספרות אל<br><strong dir="ltr">${maskedEmail}</strong>`}
+              ${this._isSuccess 
+                ? 'מעביר אותך לדשבורד...' 
+                : `קוד אימות נשלח לנייד שלך`}
             </p>
+            ${!this._isSuccess ? `
+            <p class="otp-modal__phone" dir="ltr">${maskedPhone}</p>
+            ` : ''}
           </div>
           
           ${!this._isSuccess ? `
@@ -4323,6 +4425,158 @@ class OTPModalComponent extends Component {
 }
 
 /* ============================================================================
+   SMS TOAST COMPONENT (Story 7.4)
+   ============================================================================
+   Top-positioned toast notification that simulates receiving an SMS with OTP code.
+   Slides down from top, auto-dismisses after 10 seconds, respects reduced motion.
+   ========================================================================== */
+
+/**
+ * SMSToastComponent - SMS-style notification showing OTP code (Story 7.4 AC#2)
+ * Displays a top-positioned toast that looks like a phone SMS notification
+ */
+class SMSToastComponent extends Component {
+  constructor(props = {}) {
+    super(props);
+    this.otpCode = props.otpCode || CONFIG.OTP_CODE;
+    this.autoCloseDelay = props.autoCloseDelay || 10000;
+    this._dismissTimer = null;
+    this._animationTimer = null;
+  }
+
+  /**
+   * Returns the SMS toast HTML template
+   * @returns {string} HTML string
+   */
+  template() {
+    return `
+      <div class="sms-toast sms-toast--entering" role="alert" aria-live="polite">
+        <div class="sms-toast__icon">
+          <i class="ti ti-message-2" aria-hidden="true"></i>
+        </div>
+        <div class="sms-toast__content">
+          <p class="sms-toast__title">קוד אימות נשלח</p>
+          <p class="sms-toast__code sms-toast__code--pulse" dir="ltr">${this.otpCode}</p>
+        </div>
+        <button class="sms-toast__close" data-action="close-sms-toast" aria-label="סגור הודעה">
+          <i class="ti ti-x" aria-hidden="true"></i>
+        </button>
+      </div>
+    `;
+  }
+
+  /**
+   * Mount lifecycle - starts auto-dismiss timer
+   */
+  mount() {
+    super.mount();
+    
+    // Remove entering class after animation completes
+    this._animationTimer = setTimeout(() => {
+      const toast = this.element?.querySelector('.sms-toast');
+      if (toast) {
+        toast.classList.remove('sms-toast--entering');
+      }
+    }, 300);
+    
+    // Start auto-dismiss timer
+    this._dismissTimer = setTimeout(() => {
+      this.dismiss();
+    }, this.autoCloseDelay);
+  }
+
+  /**
+   * Unmount lifecycle - clears timers
+   */
+  unmount() {
+    if (this._dismissTimer) {
+      clearTimeout(this._dismissTimer);
+      this._dismissTimer = null;
+    }
+    if (this._animationTimer) {
+      clearTimeout(this._animationTimer);
+      this._animationTimer = null;
+    }
+    super.unmount();
+  }
+
+  /**
+   * Dismiss the toast with slide-up animation
+   */
+  dismiss() {
+    const toast = this.element?.querySelector('.sms-toast');
+    if (toast) {
+      toast.classList.add('sms-toast--leaving');
+      
+      // Wait for animation, then remove from DOM
+      setTimeout(() => {
+        if (this.element) {
+          this.element.remove();
+        }
+      }, 200);
+    }
+    
+    // Clear timers
+    if (this._dismissTimer) {
+      clearTimeout(this._dismissTimer);
+      this._dismissTimer = null;
+    }
+  }
+}
+
+// Global reference for SMS toast instance
+let _currentSMSToast = null;
+
+/**
+ * Shows the SMS toast notification (Story 7.4 AC#2)
+ * Creates toast container if needed and mounts the component
+ */
+function showSMSToast() {
+  // Remove existing toast if present
+  if (_currentSMSToast) {
+    _currentSMSToast.dismiss();
+    _currentSMSToast = null;
+  }
+  
+  // Create toast container if it doesn't exist
+  let toastContainer = document.getElementById('sms-toast-container');
+  if (!toastContainer) {
+    toastContainer = document.createElement('div');
+    toastContainer.id = 'sms-toast-container';
+    document.body.appendChild(toastContainer);
+    
+    // Add event delegation for toast actions
+    toastContainer.addEventListener('click', (e) => {
+      const target = e.target.closest('[data-action]');
+      if (target && target.dataset.action === 'close-sms-toast') {
+        e.preventDefault();
+        dismissSMSToast();
+      }
+    });
+  }
+  
+  // Create and mount the SMS toast
+  _currentSMSToast = new SMSToastComponent({
+    otpCode: CONFIG.OTP_CODE,
+    autoCloseDelay: 10000
+  });
+  
+  toastContainer.innerHTML = _currentSMSToast.render();
+  _currentSMSToast.element = toastContainer.firstElementChild?.parentElement || toastContainer;
+  _currentSMSToast.mount();
+}
+
+/**
+ * Dismisses the current SMS toast if visible
+ */
+function dismissSMSToast() {
+  if (_currentSMSToast) {
+    _currentSMSToast.dismiss();
+    _currentSMSToast = null;
+  }
+}
+
+/* ============================================================================
    COMPONENTS - MAIN APP
    ============================================================================
    Dashboard, Passport, Positions, Referrals, Settings components
@@ -4357,7 +4611,7 @@ class HowToEarnComponent extends Component {
         <div class="how-to-earn__content">
           <header class="how-to-earn__header">
             <h2 class="how-to-earn__title" id="how-to-earn-heading">
-              <span class="how-to-earn__icon">🎯</span>
+              <span class="how-to-earn__icon">${renderIcon('target')}</span>
               איך להרוויח עוד נקודות
             </h2>
             <button class="how-to-earn__close" 
@@ -4389,7 +4643,7 @@ class HowToEarnComponent extends Component {
     return `
       <section class="how-to-earn__section" aria-labelledby="points-breakdown-heading">
         <h3 class="how-to-earn__section-title" id="points-breakdown-heading">
-          <span class="how-to-earn__section-icon">💰</span>
+          <span class="how-to-earn__section-icon">${renderIcon('coins')}</span>
           נקודות לפי פעולה
         </h3>
         <ul class="points-breakdown" role="list">
@@ -4420,7 +4674,7 @@ class HowToEarnComponent extends Component {
       return `
         <li class="points-breakdown__item" role="listitem">
           <span class="points-breakdown__icon" style="--stamp-color: ${stampType.color}">
-            ${stampType.emoji}
+            ${renderIcon(stampType.icon)}
           </span>
           <span class="points-breakdown__label">${opp.label}</span>
           <span class="points-breakdown__points">${opp.pointsLabel}</span>
@@ -4439,7 +4693,7 @@ class HowToEarnComponent extends Component {
     return `
       <section class="how-to-earn__section" aria-labelledby="campaigns-section-heading">
         <h3 class="how-to-earn__section-title" id="campaigns-section-heading">
-          <span class="how-to-earn__section-icon">⚡</span>
+          <span class="how-to-earn__section-icon">${renderIcon('bolt')}</span>
           קמפיינים מיוחדים
         </h3>
         ${this.campaigns.length > 0 
@@ -4515,7 +4769,7 @@ class HowToEarnComponent extends Component {
     return `
       <section class="how-to-earn__section" aria-labelledby="tips-section-heading">
         <h3 class="how-to-earn__section-title" id="tips-section-heading">
-          <span class="how-to-earn__section-icon">💡</span>
+          <span class="how-to-earn__section-icon">${renderIcon('bulb')}</span>
           טיפים להצלחה
         </h3>
         <ul class="tips-list" role="list">
@@ -4704,7 +4958,7 @@ class CampaignsComponent extends Component {
       <section class="campaigns-section" aria-labelledby="campaigns-heading">
         <header class="campaigns-section__header">
           <h2 class="campaigns-section__title" id="campaigns-heading">
-            <span class="campaigns-section__icon">🎯</span>
+            <span class="campaigns-section__icon">${renderIcon('target')}</span>
             קמפיינים פעילים
           </h2>
         </header>
@@ -4858,7 +5112,7 @@ class CampaignsComponent extends Component {
   _renderEmptyState() {
     return `
       <div class="campaigns-empty">
-        <div class="campaigns-empty__icon">📅</div>
+        <div class="campaigns-empty__icon">${renderIcon('calendar-event', { size: 'xl' })}</div>
         <p class="campaigns-empty__text">אין קמפיינים פעילים כרגע</p>
         <p class="campaigns-empty__subtext">בקרוב...</p>
       </div>
@@ -4995,7 +5249,7 @@ class DashboardComponent extends Component {
       <div class="app-layout">
         <main class="dashboard page-content">
           <section class="dashboard__greeting">
-            <h1 class="dashboard__title">שלום ${firstName}! 👋</h1>
+            <h1 class="dashboard__title">שלום ${firstName}! ${renderIcon('hand-stop')}</h1>
           </section>
           
           <section class="dashboard__stats">
@@ -5528,7 +5782,7 @@ class DashboardComponent extends Component {
               </div>
             ` : `
               <div class="points-card__next points-card__next--max">
-                <span class="points-next-text">🏆 הגעת לרמה הגבוהה ביותר!</span>
+                <span class="points-next-text">${renderIcon('trophy')} הגעת לרמה הגבוהה ביותר!</span>
               </div>
             `}
           </div>
@@ -6024,8 +6278,8 @@ class SettingsComponent extends Component {
         </h2>
         <div class="settings-card">
           <div class="settings-about">
-            <div class="settings-about__logo" aria-hidden="true">
-              <span class="settings-about__logo-text">PassportCard</span>
+            <div class="settings-about__logo" role="img" aria-label="PassportCard Refer v1.0">
+              <img src="${CONFIG.LOGOS.STANDARD}" alt="" aria-hidden="true" class="settings-about__logo-img" />
               <span class="settings-about__version">Refer v1.0</span>
             </div>
             <p class="settings-about__description">
@@ -6207,11 +6461,10 @@ class PassportComponent extends Component {
     const user = stateManager.getState('currentUser');
     if (!user) return this._renderLoading();
     
+    // Note: #main-content already has app-layout class, so we don't wrap again
     return `
-      <div class="app-layout">
-        <main class="passport-view page-content">
-          ${this._renderPassport(user)}
-        </main>
+      <div class="passport-view page-content">
+        ${this._renderPassport(user)}
       </div>
     `;
   }
@@ -6232,23 +6485,25 @@ class PassportComponent extends Component {
     // Update state
     this.passportState.totalPages = totalPages;
     
+    // FIX Story 7.6: Remove data-action from main passport element when open
+    // to prevent event bubbling from stamps/navigation triggering close
     return `
       <section class="passport-container" aria-label="הדרכון שלי">
         <article class="passport ${isOpen ? 'passport--open' : 'passport--closed'}"
                  tabindex="0"
                  role="region"
-                 aria-label="${isOpen ? 'דרכון פתוח' : 'דרכון סגור'}"
-                 data-action="${isOpen ? 'close-passport' : 'open-passport'}">
+                 aria-label="${isOpen ? 'דרכון פתוח' : 'דרכון סגור'}">
           
           <!-- Passport Pages (behind cover) -->
           <div class="passport-pages" 
                data-current-page="${currentPage}"
                aria-live="polite">
+            ${isOpen ? this._renderPagesHeader() : ''}
             ${this._renderAllPages(user, stamps)}
           </div>
           
-          <!-- Passport Cover (on top, flips open) -->
-          <div class="passport-cover">
+          <!-- Passport Cover (on top, flips open) - only cover triggers open when closed -->
+          <div class="passport-cover" ${!isOpen ? 'data-action="open-passport"' : ''}>
             <div class="passport-cover__border">
               <div class="passport-cover__content">
                 ${this._renderPassportLogo()}
@@ -6276,6 +6531,22 @@ class PassportComponent extends Component {
         ${this._renderPassportSummary(stamps, points)}
         ${isOpen && totalPages > 1 ? this._renderPageIndicator() : ''}
       </section>
+    `;
+  }
+  
+  /**
+   * Renders the pages header with close button (Story 7.6)
+   * @returns {string} HTML string
+   */
+  _renderPagesHeader() {
+    return `
+      <div class="passport-pages__header">
+        <button class="passport-pages__close-btn"
+                data-action="close-passport"
+                aria-label="סגור את הדרכון">
+          <i class="ti ti-x" aria-hidden="true"></i>
+        </button>
+      </div>
     `;
   }
   
@@ -6508,33 +6779,46 @@ class PassportComponent extends Component {
   
   /**
    * Renders navigation arrows for page navigation
+   * Story 7.6: Always show navigation UI when passport is open
    * @returns {string} HTML string
    */
   _renderNavigationArrows() {
     const { currentPage, totalPages } = this.passportState;
     const isFirstPage = currentPage === 0;
     const isLastPage = currentPage >= totalPages - 1;
-    
-    // Only show arrows if there are multiple pages
-    if (totalPages <= 1) return '';
+    const hasMultiplePages = totalPages > 1;
     
     return `
       <div class="passport-nav">
-        <button class="passport-nav__btn passport-nav__btn--prev ${isFirstPage ? 'passport-nav__btn--disabled' : ''}"
+        <button class="passport-nav__btn passport-nav__btn--prev ${!hasMultiplePages || isFirstPage ? 'passport-nav__btn--disabled' : ''}"
                 data-action="passport-prev"
                 aria-label="עמוד קודם"
-                ${isFirstPage ? 'disabled' : ''}>
+                ${!hasMultiplePages || isFirstPage ? 'disabled' : ''}>
           <i class="ti ti-chevron-right" aria-hidden="true"></i>
           <span class="passport-nav__text">הקודם</span>
         </button>
         
-        <button class="passport-nav__btn passport-nav__btn--next ${isLastPage ? 'passport-nav__btn--disabled' : ''}"
+        <button class="passport-nav__btn passport-nav__btn--next ${!hasMultiplePages || isLastPage ? 'passport-nav__btn--disabled' : ''}"
                 data-action="passport-next"
                 aria-label="עמוד הבא"
-                ${isLastPage ? 'disabled' : ''}>
+                ${!hasMultiplePages || isLastPage ? 'disabled' : ''}>
           <span class="passport-nav__text">הבא</span>
           <i class="ti ti-chevron-left" aria-hidden="true"></i>
         </button>
+      </div>
+      ${hasMultiplePages ? this._renderSwipeHint() : ''}
+    `;
+  }
+  
+  /**
+   * Renders swipe hint for mobile users (Story 7.6)
+   * @returns {string} HTML string
+   */
+  _renderSwipeHint() {
+    return `
+      <div class="passport-swipe-hint" aria-hidden="true">
+        <i class="ti ti-arrows-left-right"></i>
+        <span>החלק לניווט</span>
       </div>
     `;
   }
@@ -6713,16 +6997,8 @@ class PassportComponent extends Component {
    */
   _renderPassportLogo() {
     return `
-      <div class="passport-cover__logo" aria-label="PassportCard">
-        <svg viewBox="0 0 120 40" class="passport-logo" aria-hidden="true">
-          <text x="60" y="28" text-anchor="middle" 
-                font-family="Rubik, sans-serif" 
-                font-weight="700" 
-                font-size="16"
-                fill="currentColor">
-            PassportCard
-          </text>
-        </svg>
+      <div class="passport-cover__logo" role="img" aria-label="PassportCard">
+        <img src="${CONFIG.LOGOS.WHITE}" alt="" aria-hidden="true" class="passport-cover__logo-img" />
       </div>
     `;
   }
@@ -6906,16 +7182,25 @@ class PassportComponent extends Component {
     // Handle Enter/Space for open/close
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      const action = e.currentTarget.dataset.action;
-      if (action) {
-        // Trigger the action through the app
-        const event = new CustomEvent('passport-action', { detail: { action } });
-        document.dispatchEvent(event);
-        
-        // Also directly trigger via app if available
-        if (typeof app !== 'undefined' && app._handleAction) {
-          app._handleAction(action, e.currentTarget, e);
-        }
+      // FIX Story 7.6: Determine action based on state, not data-action attribute
+      const action = this.passportState.isOpen ? 'close-passport' : 'open-passport';
+      
+      // Trigger the action through the app
+      const event = new CustomEvent('passport-action', { detail: { action } });
+      document.dispatchEvent(event);
+      
+      // Also directly trigger via app if available
+      if (typeof app !== 'undefined' && app._handleAction) {
+        app._handleAction(action, e.currentTarget, e);
+      }
+      return;
+    }
+    
+    // FIX Story 7.6: Handle Escape key to close passport
+    if (e.key === 'Escape' && this.passportState.isOpen) {
+      e.preventDefault();
+      if (typeof app !== 'undefined' && app._handleAction) {
+        app._handleAction('close-passport', e.currentTarget, e);
       }
       return;
     }
@@ -6943,6 +7228,9 @@ class PassportComponent extends Component {
     // Update CTA button and passport aria
     const cta = document.querySelector('.passport-summary__cta');
     const passport = document.querySelector('.passport');
+    const cover = document.querySelector('.passport-cover');
+    const pagesHeader = document.querySelector('.passport-pages__header');
+    const navContainer = document.querySelector('.passport-nav');
     
     if (cta) {
       cta.dataset.action = isOpen ? 'close-passport' : 'open-passport';
@@ -6954,8 +7242,68 @@ class PassportComponent extends Component {
     }
     
     if (passport) {
-      passport.dataset.action = isOpen ? 'close-passport' : 'open-passport';
-      passport.setAttribute('aria-label', isOpen ? 'סגור את הדרכון' : 'פתח את הדרכון');
+      // FIX Story 7.6: Don't set data-action on main passport element
+      // Only update aria-label
+      passport.setAttribute('aria-label', isOpen ? 'דרכון פתוח' : 'דרכון סגור');
+    }
+    
+    // FIX Story 7.6: Update cover data-action based on state
+    if (cover) {
+      if (isOpen) {
+        cover.removeAttribute('data-action');
+      } else {
+        cover.dataset.action = 'open-passport';
+      }
+    }
+    
+    // FIX Story 7.6: Add/remove close button header when state changes
+    const pagesContainer = document.querySelector('.passport-pages');
+    if (pagesContainer) {
+      if (isOpen && !pagesHeader) {
+        // Add close button header
+        pagesContainer.insertAdjacentHTML('afterbegin', this._renderPagesHeader());
+      } else if (!isOpen && pagesHeader) {
+        // Remove close button header
+        pagesHeader.remove();
+      }
+    }
+    
+    // FIX Story 7.6: Add/remove navigation arrows when state changes
+    if (passport) {
+      if (isOpen && !navContainer) {
+        // Add navigation arrows and swipe hint
+        passport.insertAdjacentHTML('beforeend', this._renderNavigationArrows());
+      } else if (!isOpen && navContainer) {
+        // Remove navigation arrows
+        navContainer.remove();
+        const swipeHint = document.querySelector('.passport-swipe-hint');
+        if (swipeHint) swipeHint.remove();
+      }
+    }
+    
+    // Update page indicator if needed
+    if (isOpen) {
+      this._updatePageIndicator();
+    }
+  }
+  
+  /**
+   * Updates the page indicator display
+   */
+  _updatePageIndicator() {
+    const { currentPage, totalPages } = this.passportState;
+    const indicatorContainer = document.querySelector('.passport-container');
+    let indicator = document.querySelector('.page-indicator');
+    
+    if (totalPages > 1) {
+      const indicatorHtml = this._renderPageIndicator();
+      if (!indicator && indicatorContainer) {
+        indicatorContainer.insertAdjacentHTML('beforeend', indicatorHtml);
+      } else if (indicator) {
+        indicator.outerHTML = indicatorHtml;
+      }
+    } else if (indicator) {
+      indicator.remove();
     }
   }
   
@@ -7025,7 +7373,7 @@ class PositionsComponent extends Component {
       <div class="app-layout">
         <main class="positions-page" role="main">
           <header class="positions-header">
-            <h1 class="positions-title">💼 משרות פתוחות</h1>
+            <h1 class="positions-title">${renderIcon('briefcase')} משרות פתוחות</h1>
             <p class="positions-subtitle">מצאו משרה מתאימה והפנו מועמדים מהרשת שלכם</p>
           </header>
           
@@ -7398,7 +7746,7 @@ class PositionsComponent extends Component {
         <div class="position-card__badges">
           ${position.isHot ? `
             <span class="badge badge--hot" aria-label="משרה חמה">
-              🔥 חם!
+              ${renderIcon('flame')} חם!
             </span>
           ` : ''}
           ${activeCampaign ? `
@@ -7406,7 +7754,7 @@ class PositionsComponent extends Component {
                   style="--badge-color: ${activeCampaign.accentColor}"
                   aria-label="קמפיין פעיל: ${activeCampaign.title}"
                   title="${activeCampaign.title}">
-              🎁 x${activeCampaign.multiplier} נקודות!
+              ${renderIcon('gift')} x${activeCampaign.multiplier} נקודות!
             </span>
           ` : ''}
         </div>
@@ -7432,7 +7780,7 @@ class PositionsComponent extends Component {
           </div>
           
           <div class="position-card__bonus">
-            <span class="position-card__bonus-icon" aria-hidden="true">💰</span>
+            <span class="position-card__bonus-icon">${renderIcon('coins')}</span>
             ${pointsInfo.hasCampaign ? `
               <span class="position-card__bonus-text points-with-multiplier">
                 <span class="points-with-multiplier__base">${pointsInfo.base}</span>
@@ -8053,7 +8401,7 @@ class ReferralFormComponent extends Component {
         <div class="upload-zone__content">
           <i class="ti ti-file-upload upload-zone__icon" aria-hidden="true"></i>
           <p class="upload-zone__text">
-            <span class="upload-zone__text-primary">📄 גררו קובץ לכאן או לחצו לבחירה</span>
+            <span class="upload-zone__text-primary">${renderIcon('file-text')} גררו קובץ לכאן או לחצו לבחירה</span>
           </p>
           <p class="upload-zone__formats">PDF, DOC, DOCX</p>
           <p class="upload-zone__size">עד 5MB</p>
@@ -8109,7 +8457,7 @@ class ReferralFormComponent extends Component {
     return `
       <div class="referral-form__submit-section">
         <p class="referral-form__points-hint">
-          ${isFirstReferral ? '🎉 הפניה ראשונה! ' : ''}
+          ${isFirstReferral ? `${renderIcon('confetti')} הפניה ראשונה! ` : ''}
           <strong>+${points} נקודות</strong> יתווספו לחשבונך
         </p>
         
@@ -8312,7 +8660,7 @@ class ReferralFormComponent extends Component {
         <div class="upload-zone__content">
           <i class="ti ti-file-upload upload-zone__icon" aria-hidden="true"></i>
           <p class="upload-zone__text">
-            <span class="upload-zone__text-primary">📄 גררו קובץ לכאן או לחצו לבחירה</span>
+            <span class="upload-zone__text-primary">${renderIcon('file-text')} גררו קובץ לכאן או לחצו לבחירה</span>
           </p>
           <p class="upload-zone__formats">PDF, DOC, DOCX</p>
           <p class="upload-zone__size">עד 5MB</p>
@@ -8437,7 +8785,7 @@ class ReferralFormComponent extends Component {
     });
     
     // Show success message
-    app.showToast('ההפניה נשלחה בהצלחה! 🎉', 'success');
+    app.showToast('ההפניה נשלחה בהצלחה!', 'success');
     
     // Navigate to confirmation (Story 4.6)
     router.navigate('referral-confirmation');
@@ -8807,17 +9155,17 @@ class ReferralConfirmationComponent extends Component {
    */
   _renderSuccessHeader() {
     const firstReferralMessage = this.isFirstReferral 
-      ? '<p class="confirmation__first-badge">🌟 הפניה ראשונה - מעולה!</p>'
+      ? `<p class="confirmation__first-badge">${renderIcon('star-filled')} הפניה ראשונה - מעולה!</p>`
       : '';
     
     return `
       <header class="confirmation__header">
         <div class="confirmation__success-icon" aria-hidden="true">
-          <span class="confirmation__checkmark">✓</span>
+          <span class="confirmation__checkmark">${renderIcon('check', { size: 'xl' })}</span>
         </div>
         
         <h1 class="confirmation__title" id="confirmation-title" tabindex="-1">
-          🎉 ההפניה נשלחה בהצלחה!
+          ${renderIcon('confetti')} ההפניה נשלחה בהצלחה!
         </h1>
         
         ${firstReferralMessage}
@@ -8892,7 +9240,7 @@ class ReferralConfirmationComponent extends Component {
            aria-label="${stamp.title}: +${stamp.points} נקודות">
         <div class="confirmation__stamp-inner">
           <span class="confirmation__stamp-icon" aria-hidden="true">
-            ${stampConfig.emoji}
+            ${renderIcon(stampConfig.icon)}
           </span>
           <span class="confirmation__stamp-title">${stamp.title}</span>
           <span class="confirmation__stamp-points">+${stamp.points}</span>
@@ -8919,7 +9267,7 @@ class ReferralConfirmationComponent extends Component {
         
         <p class="confirmation__points-message">
           ${this.isFirstReferral 
-            ? '🎉 כולל בונוס הפניה ראשונה!' 
+            ? `${renderIcon('confetti')} כולל בונוס הפניה ראשונה!` 
             : 'הנקודות נוספו לחשבונך'}
         </p>
       </section>
@@ -9064,7 +9412,7 @@ class ReferralConfirmationComponent extends Component {
     
     // Show toast as alternative
     if (app && typeof app.showToast === 'function') {
-      app.showToast(this.isFirstReferral ? '🌟 כל הכבוד על ההפניה הראשונה!' : '✨ ההפניה נשלחה!', 'success');
+      app.showToast(this.isFirstReferral ? 'כל הכבוד על ההפניה הראשונה!' : 'ההפניה נשלחה!', 'success');
     }
   }
   
@@ -9448,7 +9796,7 @@ class ReferralsComponent extends Component {
   _renderHeader() {
     return `
       <header class="referrals-header">
-        <h1 class="referrals-header__title">📋 ההפניות שלי</h1>
+        <h1 class="referrals-header__title">${renderIcon('clipboard-list')} ההפניות שלי</h1>
       </header>
     `;
   }
@@ -9473,7 +9821,7 @@ class ReferralsComponent extends Component {
     const tabs = [
       { key: 'all', label: 'הכל', count: counts.all },
       { key: 'in-progress', label: 'בתהליך', count: counts.inProgress },
-      { key: 'hired', label: 'גויסו ✓', count: counts.hired, className: 'referral-tab--success' },
+      { key: 'hired', label: 'גויסו', icon: 'check', count: counts.hired, className: 'referral-tab--success' },
       { key: 'rejected', label: 'נדחו', count: counts.rejected, className: 'referral-tab--muted' }
     ];
     
@@ -9485,7 +9833,7 @@ class ReferralsComponent extends Component {
                   aria-selected="${this.filter === tab.key}"
                   data-action="filter-referrals"
                   data-filter="${tab.key}">
-            <span class="referral-tab__label">${tab.label}</span>
+            <span class="referral-tab__label">${tab.label}${tab.icon ? ` ${renderIcon(tab.icon)}` : ''}</span>
             <span class="referral-tab__count">${tab.count}</span>
           </button>
         `).join('')}
@@ -9644,7 +9992,7 @@ class ReferralsComponent extends Component {
       <span class="referral-badge referral-badge--${status}"
             style="--badge-color: ${statusInfo.color}"
             role="status">
-        <span aria-hidden="true">${statusInfo.icon}</span>
+        ${renderIcon(statusInfo.icon)}
         <span>${statusInfo.hebrew}</span>
       </span>
     `;
@@ -10190,7 +10538,7 @@ class StampDetailModal extends Component {
           
           <div class="stamp-modal__details">
             <h2 id="stamp-modal-title" class="stamp-modal__title">
-              ${config.emoji} ${config.label}
+              ${renderIcon(config.icon)} ${config.label}
             </h2>
             
             <div class="stamp-modal__points">
@@ -10585,12 +10933,12 @@ class PositionDetailModal extends Component {
       <div class="position-detail__badges">
         ${position.isHot ? `
           <span class="badge badge--hot badge--lg">
-            🔥 משרה חמה - דרושים בדחיפות!
+            ${renderIcon('flame')} משרה חמה - דרושים בדחיפות!
           </span>
         ` : ''}
         ${position.campaign ? `
           <span class="badge badge--campaign badge--lg">
-            🎁 קמפיין ${this._escapeHtml(position.campaign.name)} - x${position.campaign.multiplier} נקודות!
+            ${renderIcon('gift')} קמפיין ${this._escapeHtml(position.campaign.name)} - x${position.campaign.multiplier} נקודות!
           </span>
         ` : ''}
       </div>
@@ -10675,9 +11023,9 @@ class PositionDetailModal extends Component {
     const multiplier = position.campaign?.multiplier || 1;
     
     const stages = [
-      { label: 'קו״ח הוגש', basePoints: 50, icon: '📄' },
-      { label: 'ראיון נקבע', basePoints: 100, icon: '📅' },
-      { label: 'גיוס מוצלח!', basePoints: position.bonus, icon: '🎉' }
+      { label: 'קו״ח הוגש', basePoints: 50, icon: 'file-text' },
+      { label: 'ראיון נקבע', basePoints: 100, icon: 'calendar-event' },
+      { label: 'גיוס מוצלח!', basePoints: position.bonus, icon: 'confetti' }
     ];
     
     const totalBase = stages.reduce((sum, s) => sum + s.basePoints, 0);
@@ -10695,7 +11043,7 @@ class PositionDetailModal extends Component {
             const points = Math.round(stage.basePoints * multiplier);
             return `
               <div class="bonus-breakdown__row">
-                <span class="bonus-breakdown__icon" aria-hidden="true">${stage.icon}</span>
+                <span class="bonus-breakdown__icon">${renderIcon(stage.icon)}</span>
                 <span class="bonus-breakdown__label">${stage.label}</span>
                 <span class="bonus-breakdown__points ${multiplier > 1 ? 'bonus-breakdown__points--multiplied' : ''}">
                   +${points}
@@ -10708,7 +11056,7 @@ class PositionDetailModal extends Component {
           <div class="bonus-breakdown__divider"></div>
           
           <div class="bonus-breakdown__row bonus-breakdown__row--total">
-            <span class="bonus-breakdown__icon" aria-hidden="true">💰</span>
+            <span class="bonus-breakdown__icon">${renderIcon('coins')}</span>
             <span class="bonus-breakdown__label">סה״כ פוטנציאלי</span>
             <span class="bonus-breakdown__points bonus-breakdown__points--total">
               +${totalWithMultiplier} נקודות
@@ -10718,7 +11066,7 @@ class PositionDetailModal extends Component {
         
         ${multiplier > 1 ? `
           <p class="bonus-breakdown__campaign-note">
-            🎯 קמפיין "${this._escapeHtml(position.campaign.name)}" פעיל - נקודות כפולות!
+            ${renderIcon('target')} קמפיין "${this._escapeHtml(position.campaign.name)}" פעיל - נקודות כפולות!
           </p>
         ` : ''}
       </section>
@@ -11363,7 +11711,7 @@ class ReferralDetailModal extends Component {
                 ${m.label}: +${m.points} נקודות
               </span>
               <span class="points-breakdown__milestone-date">
-                ${isPast ? '✓ הושג' : `צפוי: ${formattedDate}`}
+                ${isPast ? `${renderIcon('check')} הושג` : `צפוי: ${formattedDate}`}
               </span>
             </div>
           `;
@@ -11902,7 +12250,7 @@ class SharePanel extends Component {
    * @returns {string} Share message
    */
   _getShareMessage() {
-    return `היי! 👋\n\nיש משרה מעולה ב-PassportCard:\n${this.position.title}\n\nאשמח להמליץ עליך! 🌟\n\n${this.referralLink}`;
+    return `היי!\n\nיש משרה מעולה ב-PassportCard:\n${this.position.title}\n\nאשמח להמליץ עליך!\n\n${this.referralLink}`;
   }
   
   /**
@@ -12170,6 +12518,11 @@ class ModalManager {
       this._currentModal = new OTPModalComponent();
       this._modalContainer.innerHTML = this._currentModal.render();
       this._currentModal.mount();
+      
+      // Story 7.4: Trigger SMS toast 500ms after modal opens (simulating SMS delivery)
+      setTimeout(() => {
+        showSMSToast();
+      }, 500);
     } else if (modalName === 'stamp-details') {
       // Show stamp detail modal (Story 3.5)
       const stamp = stateManager.getState('selectedStamp');
@@ -12215,7 +12568,16 @@ class ModalManager {
       case 'resend-otp':
         if (this._currentModal instanceof OTPModalComponent) {
           this._currentModal.handleResend();
+          // Story 7.4: Show SMS toast again when resending
+          setTimeout(() => {
+            showSMSToast();
+          }, 500);
         }
+        break;
+      
+      // Story 7.4: SMS Toast dismiss action
+      case 'close-sms-toast':
+        dismissSMSToast();
         break;
         
       case 'close-otp':
@@ -12560,7 +12922,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   // Passport page navigation - Next page (Story 3.3)
-  app.registerAction('passport-next', async (target) => {
+  // FIX Story 7.6: Added event parameter and stopPropagation to prevent bubbling
+  app.registerAction('passport-next', async (target, event) => {
+    if (event) event.stopPropagation();
     const passportComponent = app.getComponent('passport');
     if (passportComponent && passportComponent.navigateNext) {
       await passportComponent.navigateNext();
@@ -12568,7 +12932,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   // Passport page navigation - Previous page (Story 3.3)
-  app.registerAction('passport-prev', async (target) => {
+  // FIX Story 7.6: Added event parameter and stopPropagation to prevent bubbling
+  app.registerAction('passport-prev', async (target, event) => {
+    if (event) event.stopPropagation();
     const passportComponent = app.getComponent('passport');
     if (passportComponent && passportComponent.navigatePrev) {
       await passportComponent.navigatePrev();
@@ -12576,7 +12942,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   // View stamp details - Opens stamp detail modal (Story 3.4, 3.5)
-  app.registerAction('view-stamp-details', (target) => {
+  // FIX Story 7.6: Added event parameter and stopPropagation to prevent bubbling
+  app.registerAction('view-stamp-details', (target, event) => {
+    if (event) event.stopPropagation();
     const stampId = target.dataset.stampId;
     if (!stampId) return;
     
@@ -12796,7 +13164,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentUser = stateManager.getState('currentUser');
     const userName = currentUser?.firstName || 'מישהו';
     
-    const shareText = `${userName} הפנה/ה מועמד/ת חדש/ה ל-PassportCard! 🎉\n\nגם אתם יכולים להרוויח נקודות על ידי הפניית חברים.`;
+    const shareText = `${userName} הפנה/ה מועמד/ת חדש/ה ל-PassportCard!\n\nגם אתם יכולים להרוויח נקודות על ידי הפניית חברים.`;
     
     // Try Web Share API first
     if (navigator.share) {
