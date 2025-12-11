@@ -282,16 +282,27 @@ const CONFIG = {
   // Demo OTP code for authentication
   OTP_CODE: '000000',
   
-  // Application routes
+  // Application routes with page mapping for multi-page architecture
   ROUTES: {
-    auth: { component: 'LoginComponent', requiresAuth: false },
-    dashboard: { component: 'DashboardComponent', requiresAuth: true },
-    passport: { component: 'PassportComponent', requiresAuth: true },
-    positions: { component: 'PositionsComponent', requiresAuth: true },
-    refer: { component: 'ReferralFormComponent', requiresAuth: true },
-    'referral-confirmation': { component: 'ReferralConfirmationComponent', requiresAuth: true },
-    referrals: { component: 'ReferralsComponent', requiresAuth: true },
-    settings: { component: 'SettingsComponent', requiresAuth: true }
+    auth: { component: 'LoginComponent', requiresAuth: false, page: 'login' },
+    dashboard: { component: 'DashboardComponent', requiresAuth: true, page: 'dashboard' },
+    passport: { component: 'PassportComponent', requiresAuth: true, page: 'passport' },
+    positions: { component: 'PositionsComponent', requiresAuth: true, page: 'positions' },
+    refer: { component: 'ReferralFormComponent', requiresAuth: true, page: 'positions' },
+    'referral-confirmation': { component: 'ReferralConfirmationComponent', requiresAuth: true, page: 'positions' },
+    referrals: { component: 'ReferralsComponent', requiresAuth: true, page: 'referrals' },
+    settings: { component: 'SettingsComponent', requiresAuth: true, page: 'settings' }
+  },
+  
+  // Page to default route mapping (for multi-page navigation)
+  PAGE_ROUTES: {
+    'login': 'auth',
+    'dashboard': 'dashboard',
+    'passport': 'passport',
+    'positions': 'positions',
+    'referrals': 'referrals',
+    'settings': 'settings',
+    'index': 'auth'  // Entry point defaults to auth
   },
   
   // Default route for unauthenticated users
@@ -1256,7 +1267,35 @@ class Router {
   constructor() {
     this._routes = CONFIG.ROUTES;
     this._currentRoute = null;
+    this._currentPage = this._detectCurrentPage();
     this._init();
+  }
+  
+  /**
+   * Detects the current page from data-page attribute or URL
+   * @returns {string} Current page name
+   */
+  _detectCurrentPage() {
+    // First try data-page attribute on body
+    const bodyPage = document.body?.dataset?.page;
+    if (bodyPage) {
+      return bodyPage;
+    }
+    
+    // Fallback to URL path parsing
+    const path = window.location.pathname;
+    const filename = path.split('/').pop() || 'index.html';
+    return filename.replace('.html', '') || 'index';
+  }
+  
+  /**
+   * Gets the page HTML file for a route
+   * @param {string} routeName - Route name
+   * @returns {string} Page filename (without .html)
+   */
+  _getPageForRoute(routeName) {
+    const routeConfig = this._routes[routeName];
+    return routeConfig?.page || 'index';
   }
   
   /**
@@ -1275,7 +1314,14 @@ class Router {
    * @returns {string} Route name
    */
   _parseHash() {
-    const hash = window.location.hash.slice(1) || CONFIG.DEFAULT_ROUTE;
+    const hash = window.location.hash.slice(1);
+    
+    // If no hash, get default route for current page
+    if (!hash) {
+      const pageRoute = CONFIG.PAGE_ROUTES[this._currentPage];
+      return pageRoute || CONFIG.DEFAULT_ROUTE;
+    }
+    
     return hash.split('?')[0]; // Remove query params if any
   }
   
@@ -1315,33 +1361,69 @@ class Router {
       return;
     }
     
-    // Apply route guards
+    // Apply route guards (auth checks)
     const targetRoute = this._checkAuth(route);
     
     if (targetRoute !== route) {
-      // Route was redirected by guard - navigate to target without adding history entry
+      // Route was redirected by guard - navigate to target
       this.navigate(targetRoute, { replace: true });
       return;
     }
     
-    // Update state with new route
+    // Check if route requires page navigation
+    const targetPage = this._getPageForRoute(targetRoute);
+    if (targetPage !== this._currentPage && this._currentPage !== 'index') {
+      // Need to navigate to different page
+      this._navigateToPage(targetPage, targetRoute);
+      return;
+    }
+    
+    // Same page navigation - update state
     const previousView = stateManager.getState('currentView');
-    this._currentRoute = route;
+    this._currentRoute = targetRoute;
     
     stateManager.setState({
-      currentView: route,
+      currentView: targetRoute,
       previousView: previousView
     });
   }
   
   /**
+   * Navigates to a different HTML page
+   * @param {string} page - Target page name
+   * @param {string} route - Route to set on target page
+   */
+  _navigateToPage(page, route) {
+    // Build URL with hash for the route
+    const pageUrl = `${page}.html#${route}`;
+    window.location.href = pageUrl;
+  }
+  
+  /**
    * Navigates to a route with route guards applied
+   * Handles cross-page navigation automatically
    * @param {string} route - Route name
    * @param {Object} [options] - Navigation options
    */
   navigate(route, options = {}) {
     const { replace = false } = options;
     
+    // Check if route exists
+    if (!this._routes[route]) {
+      console.warn(`Router: Unknown route "${route}", redirecting to default`);
+      route = CONFIG.DEFAULT_ROUTE;
+    }
+    
+    // Check if we need to go to a different page
+    const targetPage = this._getPageForRoute(route);
+    
+    if (targetPage !== this._currentPage && this._currentPage !== 'index') {
+      // Cross-page navigation
+      this._navigateToPage(targetPage, route);
+      return;
+    }
+    
+    // Same page navigation - use hash
     if (replace) {
       window.location.replace(`#${route}`);
     } else {
@@ -1364,6 +1446,14 @@ class Router {
    */
   getRouteConfig(route) {
     return this._routes[route] || null;
+  }
+  
+  /**
+   * Gets current page name
+   * @returns {string} Current page
+   */
+  getCurrentPage() {
+    return this._currentPage;
   }
 }
 
@@ -2277,8 +2367,11 @@ class AuthService {
       app.showToast('התנתקת בהצלחה', 'success');
     }
     
-    // Navigate to auth
-    router.navigate('auth');
+    // Navigate to auth - use direct redirect for multi-page architecture (Story 7.0)
+    // Small delay to allow toast to show before page redirect
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 300);
   }
   
   /**
@@ -12223,6 +12316,50 @@ const modalManager = new ModalManager();
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Multi-page entry point handler (Story 7.0)
+  // If on index.html, redirect to appropriate page based on auth state
+  const currentPage = document.body?.dataset?.page || 'index';
+  
+  if (currentPage === 'index') {
+    // State is loaded by StateManager constructor
+    const isAuthenticated = stateManager.getState('isAuthenticated');
+    
+    // Validate session if authenticated
+    if (isAuthenticated && !stateManager._validateSession()) {
+      console.log('Invalid session on entry, clearing...');
+      stateManager._clearSession();
+    }
+    
+    // Redirect to appropriate page
+    const targetPage = stateManager.getState('isAuthenticated') ? 'dashboard' : 'login';
+    const hash = window.location.hash.slice(1);
+    
+    // If hash specifies a valid route, respect it (for bookmarked URLs)
+    if (hash && CONFIG.ROUTES[hash]) {
+      const routeConfig = CONFIG.ROUTES[hash];
+      const routePage = routeConfig.page;
+      
+      // Check auth requirements
+      if (routeConfig.requiresAuth && !stateManager.getState('isAuthenticated')) {
+        // Needs auth but not logged in - go to login
+        window.location.replace('login.html');
+        return;
+      } else if (!routeConfig.requiresAuth && hash === 'auth' && stateManager.getState('isAuthenticated')) {
+        // Already authenticated, skip login
+        window.location.replace('dashboard.html');
+        return;
+      } else {
+        // Navigate to the route's page
+        window.location.replace(`${routePage}.html#${hash}`);
+        return;
+      }
+    }
+    
+    // No valid hash - go to default page
+    window.location.replace(`${targetPage}.html`);
+    return;
+  }
+  
   // State is already loaded and validated by StateManager constructor
   // Validate session state before app renders
   if (stateManager.getState('isAuthenticated')) {
