@@ -1620,7 +1620,20 @@ class Component {
 class AnimationService {
   constructor() {
     this._reducedMotion = this._checkReducedMotion();
+    this._gsapAvailable = this._checkGsapAvailable();
     this._setupMotionListener();
+  }
+  
+  /**
+   * Checks if GSAP is available
+   * @returns {boolean} True if GSAP is loaded
+   */
+  _checkGsapAvailable() {
+    const available = typeof gsap !== 'undefined';
+    if (!available) {
+      console.warn('AnimationService: GSAP not loaded, falling back to CSS animations');
+    }
+    return available;
   }
   
   /**
@@ -1650,64 +1663,183 @@ class AnimationService {
   }
   
   /**
-   * Animates passport opening with 3D flip effect
+   * Initializes passport to its current state
+   * Called when passport component renders to ensure proper visual state
+   * @param {HTMLElement} passportEl - The passport container element
+   */
+  initializePassport(passportEl) {
+    if (!passportEl) return;
+    
+    const coverEl = passportEl.querySelector('.passport-cover');
+    const pagesEl = passportEl.querySelector('.passport-pages');
+    const isOpen = passportEl.classList.contains('passport--open');
+    
+    // Clear any previous GSAP inline styles to let CSS control state
+    if (this._gsapAvailable && coverEl) {
+      gsap.set(coverEl, { clearProps: 'all' });
+    }
+    
+    // Let CSS handle the visual state based on class
+    if (pagesEl) {
+      if (isOpen) {
+        pagesEl.style.opacity = '1';
+        pagesEl.style.pointerEvents = 'auto';
+      } else {
+        pagesEl.style.opacity = '0';
+        pagesEl.style.pointerEvents = 'none';
+      }
+    }
+  }
+  
+  /**
+   * Animates passport opening with 3D flip effect using GSAP
    * @param {HTMLElement} passportEl - The passport container element
    * @returns {Promise<void>} Resolves when animation completes
    */
   async animatePassportOpen(passportEl) {
     if (!passportEl) return;
     
+    const coverEl = passportEl.querySelector('.passport-cover');
+    const pagesEl = passportEl.querySelector('.passport-pages');
+    if (!coverEl) return;
+    
     // Skip animation for reduced motion preference
     if (this._reducedMotion) {
       passportEl.classList.remove('passport--closed');
       passportEl.classList.add('passport--open');
+      if (pagesEl) {
+        pagesEl.style.opacity = '1';
+        pagesEl.style.pointerEvents = 'auto';
+      }
+      if (this._gsapAvailable) {
+        gsap.set(coverEl, { rotateY: -160 });
+      } else {
+        coverEl.style.transform = 'rotateY(-160deg)';
+      }
       return;
     }
     
-    // Get the cover element
-    const coverEl = passportEl.querySelector('.passport-cover');
-    if (!coverEl) return;
-    
-    // Start opening animation
+    // Update state classes
     passportEl.classList.remove('passport--closed');
     passportEl.classList.add('passport--opening');
     
-    // Wait for animation to complete
-    await this.waitForAnimationByName(coverEl, 'passportOpen');
+    // Show pages immediately
+    if (pagesEl) {
+      if (this._gsapAvailable) {
+        gsap.set(pagesEl, { opacity: 1, pointerEvents: 'auto' });
+      } else {
+        pagesEl.style.opacity = '1';
+        pagesEl.style.pointerEvents = 'auto';
+      }
+    }
     
-    // Set final state
-    passportEl.classList.remove('passport--opening');
-    passportEl.classList.add('passport--open');
+    // Use GSAP for reliable cross-browser animation
+    if (this._gsapAvailable) {
+      return new Promise((resolve) => {
+        gsap.fromTo(coverEl, 
+          { rotateY: 0 },
+          { 
+            rotateY: -160,
+            duration: 0.8,
+            ease: 'power2.inOut',
+            force3D: true, // Better mobile performance
+            onComplete: () => {
+              // Clear GSAP inline styles so CSS class can take over
+              gsap.set(coverEl, { clearProps: 'transform' });
+              passportEl.classList.remove('passport--opening');
+              passportEl.classList.add('passport--open');
+              resolve();
+            }
+          }
+        );
+      });
+    } else {
+      // Fallback: use CSS transition
+      coverEl.style.transition = 'transform 0.8s ease-in-out';
+      coverEl.style.transform = 'rotateY(-160deg)';
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          passportEl.classList.remove('passport--opening');
+          passportEl.classList.add('passport--open');
+          resolve();
+        }, 800);
+      });
+    }
   }
   
   /**
-   * Animates passport closing with reverse 3D flip
+   * Animates passport closing with reverse 3D flip using GSAP
    * @param {HTMLElement} passportEl - The passport container element
    * @returns {Promise<void>} Resolves when animation completes
    */
   async animatePassportClose(passportEl) {
     if (!passportEl) return;
     
+    const coverEl = passportEl.querySelector('.passport-cover');
+    const pagesEl = passportEl.querySelector('.passport-pages');
+    if (!coverEl) return;
+    
     // Skip animation for reduced motion preference
     if (this._reducedMotion) {
       passportEl.classList.remove('passport--open');
       passportEl.classList.add('passport--closed');
+      if (pagesEl) {
+        pagesEl.style.opacity = '0';
+        pagesEl.style.pointerEvents = 'none';
+      }
+      if (this._gsapAvailable) {
+        gsap.set(coverEl, { rotateY: 0 });
+      } else {
+        coverEl.style.transform = 'rotateY(0deg)';
+      }
       return;
     }
     
-    const coverEl = passportEl.querySelector('.passport-cover');
-    if (!coverEl) return;
-    
-    // Start closing animation
+    // Update state classes
     passportEl.classList.remove('passport--open');
     passportEl.classList.add('passport--closing');
     
-    // Wait for animation to complete
-    await this.waitForAnimationByName(coverEl, 'passportClose');
-    
-    // Set final state
-    passportEl.classList.remove('passport--closing');
-    passportEl.classList.add('passport--closed');
+    // Use GSAP for reliable cross-browser animation
+    if (this._gsapAvailable) {
+      return new Promise((resolve) => {
+        gsap.fromTo(coverEl, 
+          { rotateY: -160 },
+          { 
+            rotateY: 0,
+            duration: 0.8,
+            ease: 'power2.inOut',
+            force3D: true, // Better mobile performance
+            onComplete: () => {
+              // Clear GSAP inline styles so CSS class can take over
+              gsap.set(coverEl, { clearProps: 'transform' });
+              passportEl.classList.remove('passport--closing');
+              passportEl.classList.add('passport--closed');
+              // Hide pages after animation completes
+              if (pagesEl) {
+                pagesEl.style.opacity = '0';
+                pagesEl.style.pointerEvents = 'none';
+              }
+              resolve();
+            }
+          }
+        );
+      });
+    } else {
+      // Fallback: use CSS transition
+      coverEl.style.transition = 'transform 0.8s ease-in-out';
+      coverEl.style.transform = 'rotateY(0deg)';
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          passportEl.classList.remove('passport--closing');
+          passportEl.classList.add('passport--closed');
+          if (pagesEl) {
+            pagesEl.style.opacity = '0';
+            pagesEl.style.pointerEvents = 'none';
+          }
+          resolve();
+        }, 800);
+      });
+    }
   }
   
   /**
@@ -1768,38 +1900,70 @@ class AnimationService {
   }
   
   /**
-   * Animates page flip to next page
+   * Animates page flip to next page using GSAP
    * @param {HTMLElement} pagesEl - The passport-pages container
    * @returns {Promise<void>}
    */
   async animatePageFlipNext(pagesEl) {
-    if (!pagesEl) return;
+    if (!pagesEl) return Promise.resolve();
     
     if (this._reducedMotion) {
       // Instant transition for reduced motion
-      return;
+      return Promise.resolve();
     }
     
-    pagesEl.classList.add('passport-pages--flipping-next');
-    await this.waitForAnimationByName(pagesEl, 'pageFlipNext');
-    pagesEl.classList.remove('passport-pages--flipping-next');
+    if (!this._gsapAvailable) {
+      // Simple CSS fallback
+      return Promise.resolve();
+    }
+    
+    // Use GSAP for smooth page flip animation
+    return new Promise((resolve) => {
+      gsap.fromTo(pagesEl,
+        { opacity: 1 },
+        {
+          opacity: 0.7,
+          duration: 0.15,
+          ease: 'power1.in',
+          yoyo: true,
+          repeat: 1,
+          onComplete: resolve
+        }
+      );
+    });
   }
   
   /**
-   * Animates page flip to previous page
+   * Animates page flip to previous page using GSAP
    * @param {HTMLElement} pagesEl - The passport-pages container
    * @returns {Promise<void>}
    */
   async animatePageFlipPrev(pagesEl) {
-    if (!pagesEl) return;
+    if (!pagesEl) return Promise.resolve();
     
     if (this._reducedMotion) {
-      return;
+      return Promise.resolve();
     }
     
-    pagesEl.classList.add('passport-pages--flipping-prev');
-    await this.waitForAnimationByName(pagesEl, 'pageFlipPrev');
-    pagesEl.classList.remove('passport-pages--flipping-prev');
+    if (!this._gsapAvailable) {
+      // Simple CSS fallback
+      return Promise.resolve();
+    }
+    
+    // Use GSAP for smooth page flip animation
+    return new Promise((resolve) => {
+      gsap.fromTo(pagesEl,
+        { opacity: 1 },
+        {
+          opacity: 0.7,
+          duration: 0.15,
+          ease: 'power1.in',
+          yoyo: true,
+          repeat: 1,
+          onComplete: resolve
+        }
+      );
+    });
   }
   
   /**
@@ -7044,6 +7208,14 @@ class PassportComponent extends Component {
     this.subscribe('currentUser', this._handleUserChange.bind(this));
     this.subscribe('stamps', this._handleStampsChange.bind(this));
     
+    // Initialize passport with GSAP for proper mobile support
+    setTimeout(() => {
+      const passportEl = document.querySelector('.passport');
+      if (passportEl && typeof animationService !== 'undefined') {
+        animationService.initializePassport(passportEl);
+      }
+    }, 0);
+    
     // Set up keyboard handler for passport after render
     this._setupKeyboardHandlers();
     
@@ -7316,6 +7488,15 @@ class PassportComponent extends Component {
       const appContainer = document.getElementById('main-content');
       if (appContainer && this.isMounted()) {
         appContainer.innerHTML = this.template();
+        
+        // Re-initialize passport with GSAP
+        setTimeout(() => {
+          const passportEl = document.querySelector('.passport');
+          if (passportEl && typeof animationService !== 'undefined') {
+            animationService.initializePassport(passportEl);
+          }
+        }, 0);
+        
         this._setupKeyboardHandlers();
         this._setupTouchHandlers();
       }
@@ -12886,9 +13067,18 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Register open-passport action handler (Story 3.1 - Passport Cover Design)
   // Open passport action - triggers 3D flip animation
-  app.registerAction('open-passport', async (target) => {
+  app.registerAction('open-passport', async (target, event) => {
+    if (event) event.stopPropagation();
+    
     const passportEl = document.querySelector('.passport');
-    if (!passportEl || passportEl.classList.contains('passport--opening')) return;
+    if (!passportEl) return;
+    
+    // Don't open if already open or animating
+    if (passportEl.classList.contains('passport--open') ||
+        passportEl.classList.contains('passport--opening') ||
+        passportEl.classList.contains('passport--closing')) {
+      return;
+    }
     
     // Use AnimationService for the animation
     await animationService.animatePassportOpen(passportEl);
@@ -12904,9 +13094,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   // Close passport action - triggers reverse 3D flip animation
-  app.registerAction('close-passport', async (target) => {
+  app.registerAction('close-passport', async (target, event) => {
+    if (event) event.stopPropagation();
+    
     const passportEl = document.querySelector('.passport');
-    if (!passportEl || passportEl.classList.contains('passport--closing')) return;
+    if (!passportEl) return;
+    
+    // Don't close if already closed or animating
+    if (passportEl.classList.contains('passport--closed') ||
+        passportEl.classList.contains('passport--opening') ||
+        passportEl.classList.contains('passport--closing')) {
+      return;
+    }
     
     // Use AnimationService for the animation
     await animationService.animatePassportClose(passportEl);

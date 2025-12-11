@@ -4179,38 +4179,17 @@ body.has-sidebar {
    --------------------------------------------------------------------------- */
 
 /* =========================================================================
-   PASSPORT OPENING ANIMATION (Story 3.2)
-   ========================================================================= */
-
-/* Passport Opening Keyframes - Cover flips from 0 to 160 degrees */
-@keyframes passportOpen {
-  0% {
-    transform: rotateY(0deg);
-  }
-  100% {
-    transform: rotateY(-160deg);
-  }
-}
-
-/* Passport Closing Keyframes - Reverse animation */
-@keyframes passportClose {
-  0% {
-    transform: rotateY(-160deg);
-  }
-  100% {
-    transform: rotateY(0deg);
-  }
-}
-
-/* =========================================================================
    PASSPORT 3D CONTEXT & STATES (Story 3.2)
+   GSAP handles all animations - CSS provides 3D context only
    ========================================================================= */
 
 /* Passport Book Container - 3D Context */
 .passport {
   cursor: pointer;
-  perspective: 1000px;
+  perspective: 1200px; /* Increased for better mobile 3D effect */
   transform-style: preserve-3d;
+  -webkit-perspective: 1200px;
+  -webkit-transform-style: preserve-3d;
 }
 
 .passport:focus {
@@ -4240,28 +4219,29 @@ body.has-sidebar {
   top: var(--space-2);
   left: var(--space-2);
   right: var(--space-2);
-  z-index: 25;
+  z-index: 100; /* High z-index to ensure clickability */
   display: flex;
   justify-content: flex-start; /* RTL: left is visual right */
   pointer-events: none;
 }
 
 .passport-pages__close-btn {
-  width: 40px;
-  height: 40px;
-  min-width: 44px; /* Touch target */
-  min-height: 44px;
+  width: 44px;
+  height: 44px;
+  min-width: 48px; /* Larger touch target */
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   background: var(--color-primary);
-  border: 2px solid var(--color-white);
+  border: 3px solid var(--color-white);
   color: var(--color-white);
   cursor: pointer;
-  pointer-events: auto;
+  pointer-events: auto; /* Make button clickable */
   transition: var(--transition-fast);
-  box-shadow: 0 2px 8px rgba(225, 5, 20, 0.3);
+  box-shadow: 0 4px 12px rgba(225, 5, 20, 0.4);
+  z-index: 101; /* Ensure button is above everything */
 }
 
 .passport-pages__close-btn:hover {
@@ -4307,18 +4287,22 @@ body.has-sidebar {
   order: 1;
 }
 
-/* Passport Cover - 3D Flip Transform Setup */
+/* Passport Cover - 3D Flip Transform Setup (GSAP controls animations) */
 .passport-cover {
   transform-origin: left center;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  transition: transform 0.3s ease;
+  -webkit-transform-origin: left center;
+  -webkit-transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
   z-index: 1;
-  will-change: transform; /* GPU acceleration for flip animation */
+  will-change: transform;
+  /* No CSS transition - GSAP handles all transforms for reliable mobile support */
 }
 
 /* =========================================================================
    PASSPORT STATE CLASSES (Story 3.2)
+   CSS provides transform states as fallbacks, GSAP animates transitions
    ========================================================================= */
 
 /* Closed State (default) */
@@ -4331,17 +4315,13 @@ body.has-sidebar {
   pointer-events: none;
 }
 
-/* Opening Animation State */
-.passport--opening .passport-cover {
-  animation: passportOpen 800ms var(--ease-passport-flip) forwards;
-}
-
+/* Opening Animation State - GSAP animates, no CSS transform override needed */
 .passport--opening .passport-pages {
   opacity: 1;
   pointer-events: auto;
 }
 
-/* Open State */
+/* Open State - CSS maintains final transform */
 .passport--open .passport-cover {
   transform: rotateY(-160deg);
 }
@@ -4351,11 +4331,7 @@ body.has-sidebar {
   pointer-events: auto;
 }
 
-/* Closing Animation State */
-.passport--closing .passport-cover {
-  animation: passportClose 800ms var(--ease-passport-flip) forwards;
-}
-
+/* Closing Animation State - GSAP animates */
 .passport--closing .passport-pages {
   opacity: 1;
 }
@@ -4555,24 +4531,13 @@ body.has-sidebar {
 
 /* =========================================================================
    PASSPORT ANIMATION REDUCED MOTION (Story 3.2)
+   Note: GSAP handles reduced motion via AnimationService._reducedMotion
+   These CSS rules provide fallback styling only
    ========================================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .passport-cover {
-    transition: none;
-  }
-  
-  .passport--opening .passport-cover,
-  .passport--closing .passport-cover {
-    animation: none;
-  }
-  
-  .passport--opening .passport-cover {
-    transform: rotateY(-160deg);
-  }
-  
-  .passport--closing .passport-cover {
-    transform: rotateY(0deg);
+    transition: none !important;
   }
 }
 
@@ -4594,37 +4559,11 @@ body.has-sidebar {
   opacity: 1;
 }
 
-/* Page Flip Animations */
-@keyframes pageFlipNext {
-  0% {
-    transform: perspective(1000px) rotateY(0deg);
-    transform-origin: left center;
-  }
-  100% {
-    transform: perspective(1000px) rotateY(-180deg);
-    transform-origin: left center;
-  }
-}
-
-@keyframes pageFlipPrev {
-  0% {
-    transform: perspective(1000px) rotateY(-180deg);
-    transform-origin: right center;
-  }
-  100% {
-    transform: perspective(1000px) rotateY(0deg);
-    transform-origin: right center;
-  }
-}
-
-.passport-pages--flipping-next {
-  animation: pageFlipNext 600ms var(--ease-passport-flip) forwards;
-  will-change: transform; /* GPU acceleration for page flip */
-}
-
+/* Page Flip Animations - GSAP handles these now for better mobile support */
+/* Legacy CSS classes kept for backwards compatibility but animations are via GSAP */
+.passport-pages--flipping-next,
 .passport-pages--flipping-prev {
-  animation: pageFlipPrev 600ms var(--ease-passport-flip) forwards;
-  will-change: transform; /* GPU acceleration for page flip */
+  will-change: opacity;
 }
 
 /* =========================================================================
@@ -9672,31 +9611,13 @@ a:focus-visible {
   }
   
   /* -------------------------------------------------------------------------
-     Passport Animations - Instant State Changes (AC: #9, #10)
+     Passport Animations - GSAP handles reduced motion via JS
+     These CSS rules provide fallback styling only (AC: #9, #10)
      ------------------------------------------------------------------------- */
-  
-  .passport--opening .passport-cover,
-  .passport--closing .passport-cover {
-    animation: none !important;
-  }
-  
-  .passport--opening .passport-cover {
-    transform: rotateY(-160deg); /* Final open state */
-  }
-  
-  .passport--closing .passport-cover {
-    transform: rotateY(0deg); /* Final closed state */
-  }
   
   .passport-pages--flipping-next,
   .passport-pages--flipping-prev {
     animation: none !important;
-  }
-  
-  /* Page flip - instant state change */
-  .passport-page--flipping {
-    animation: none !important;
-    transform: rotateY(-180deg); /* Final flip state */
   }
   
   /* -------------------------------------------------------------------------
