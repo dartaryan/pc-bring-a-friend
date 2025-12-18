@@ -6589,12 +6589,40 @@ class PassportComponent extends Component {
     super();
     this.passportState = {
       isOpen: false,
-      currentPage: 0,     // 0 = profile spread, 1+ = stamp pages
-      totalPages: 1,
+      currentPage: 0,     // Desktop: spread index. Mobile: individual page index
+      totalPages: 1,      // Desktop: total spreads. Mobile: total individual pages
+      mobilePageInSpread: 0, // 0 = right page (profile), 1 = left page (stamps) - for mobile within spread 0
       isAnimating: false  // Prevent double navigation
     };
     this.touchStartX = 0;
     this.touchEndX = 0;
+    // Cache mobile check
+    this._isMobileCache = null;
+    this._resizeHandler = this._handleResize.bind(this);
+  }
+  
+  /**
+   * Check if current viewport is mobile (< 768px)
+   * @returns {boolean}
+   */
+  _isMobile() {
+    if (this._isMobileCache === null || typeof window !== 'undefined') {
+      this._isMobileCache = window.innerWidth < 768;
+    }
+    return this._isMobileCache;
+  }
+  
+  /**
+   * Handle window resize - update mobile state
+   */
+  _handleResize() {
+    const wasMobile = this._isMobileCache;
+    this._isMobileCache = window.innerWidth < 768;
+    
+    // If viewport changed between mobile/desktop, re-render
+    if (wasMobile !== this._isMobileCache && this.passportState.isOpen) {
+      this._updatePageDisplay();
+    }
   }
   
   /**
@@ -6605,16 +6633,45 @@ class PassportComponent extends Component {
   }
   
   /**
-   * Calculates total passport pages based on stamps
-   * Page 0: Profile page (always exists)
-   * Pages 1+: Stamp pages (6 stamps each)
-   * @param {Array} stamps - User's stamps array
-   * @returns {number} Total number of page spreads
+   * Minimum number of stamp pages to show (for future stamps feature)
+   * This creates "future pages" that users can browse to see where new stamps will go
    */
-  _calculateTotalPages(stamps) {
-    if (!stamps || stamps.length === 0) return 1; // Just profile page
-    const stampPages = Math.ceil(stamps.length / PassportComponent.STAMPS_PER_PAGE);
-    return 1 + Math.ceil(stampPages / 2); // Profile spread + stamp spreads (2 pages per spread)
+  static get MIN_STAMP_PAGES() {
+    return 3; // Show at least 3 stamp pages (18 stamp slots total)
+  }
+
+  /**
+   * Calculates total passport pages based on stamps
+   * Desktop: Returns number of spreads (2 pages per spread)
+   * Mobile: Returns number of individual pages
+   * Always includes future pages for stamps to encourage collection
+   * @param {Array} stamps - User's stamps array
+   * @param {boolean} forMobile - If true, calculate for mobile (individual pages)
+   * @returns {number} Total number of pages/spreads
+   */
+  _calculateTotalPages(stamps, forMobile = false) {
+    const stampCount = stamps ? stamps.length : 0;
+    const actualStampPages = Math.ceil(stampCount / PassportComponent.STAMPS_PER_PAGE) || 1;
+    
+    // Always show at least MIN_STAMP_PAGES for future stamps
+    const totalStampPages = Math.max(actualStampPages, PassportComponent.MIN_STAMP_PAGES);
+    
+    if (forMobile) {
+      // Mobile: 1 profile + totalStampPages individual pages
+      return 1 + totalStampPages;
+    }
+    
+    // Desktop: 1 profile spread + ceiling of stamp spreads (2 pages per spread)
+    return 1 + Math.ceil(totalStampPages / 2);
+  }
+  
+  /**
+   * Gets the total number of pages for current viewport
+   * @param {Array} stamps - User's stamps array
+   * @returns {number} Total pages appropriate for current viewport
+   */
+  _getTotalPagesForViewport(stamps) {
+    return this._calculateTotalPages(stamps, this._isMobile());
   }
   
   /**
@@ -6644,7 +6701,8 @@ class PassportComponent extends Component {
     const points = user.points || 0;
     const isOpen = this.passportState.isOpen;
     const currentPage = this.passportState.currentPage;
-    const totalPages = this._calculateTotalPages(stamps);
+    // Use viewport-aware total pages calculation
+    const totalPages = this._getTotalPagesForViewport(stamps);
     
     // Update state
     this.passportState.totalPages = totalPages;
@@ -6688,12 +6746,11 @@ class PassportComponent extends Component {
               </div>
             </div>
           </div>
-          
-          ${isOpen ? this._renderNavigationArrows() : ''}
         </article>
         
         ${this._renderPassportSummary(stamps, points)}
-        ${isOpen && totalPages > 1 ? this._renderPageIndicator() : ''}
+        ${this._renderNavigationArrows()}
+        ${totalPages > 1 ? this._renderPageIndicator() : ''}
       </section>
     `;
   }
@@ -6798,17 +6855,26 @@ class PassportComponent extends Component {
     const startIdx = pageIndex * STAMPS_PER_PAGE;
     const pageStamps = stamps.slice(startIdx, startIdx + STAMPS_PER_PAGE);
     
+    // Calculate empty slots for this page
+    const emptySlots = STAMPS_PER_PAGE - pageStamps.length;
+    
+    // For empty pages (future pages), show all placeholders
     if (pageStamps.length === 0) {
+      const placeholderTypes = this._getFuturePlaceholderTypes(STAMPS_PER_PAGE);
       return `
-        <div class="stamps-page stamps-page--empty">
-          <p class="stamps-page__empty-text">עוד אין חותמות בעמוד זה</p>
-          <p class="stamps-page__empty-hint">המשך להפנות כדי לאסוף עוד!</p>
+        <div class="stamps-page stamps-page--future">
+          <div class="stamps-grid">
+            ${placeholderTypes.map(type => this._renderStampPlaceholder(type)).join('')}
+          </div>
+          <p class="stamps-page__future-hint">
+            <i class="ti ti-sparkles" aria-hidden="true"></i>
+            עמוד לחותמות עתידיות
+          </p>
         </div>
       `;
     }
     
-    // Calculate empty slots for this page
-    const emptySlots = STAMPS_PER_PAGE - pageStamps.length;
+    // For pages with some stamps, fill remaining with contextual placeholders
     const placeholderTypes = this._getPlaceholderTypes(stamps, emptySlots);
     
     return `
@@ -6819,6 +6885,18 @@ class PassportComponent extends Component {
         </div>
       </div>
     `;
+  }
+  
+  /**
+   * Gets placeholder types for future empty pages
+   * Creates a varied pattern of placeholder stamps
+   * @param {number} count - Number of placeholders needed
+   * @returns {Array} Array of stamp type keys
+   */
+  _getFuturePlaceholderTypes(count) {
+    // Rotating pattern of stamp types for visual variety
+    const types = ['submitted', 'interview', 'hired', 'submitted', 'milestone', 'interview'];
+    return Array.from({ length: count }, (_, i) => types[i % types.length]);
   }
   
   /**
@@ -6947,7 +7025,9 @@ class PassportComponent extends Component {
    * @returns {string} HTML string
    */
   _renderNavigationArrows() {
-    const { currentPage, totalPages } = this.passportState;
+    const { currentPage } = this.passportState;
+    const stamps = stateManager.getState('stamps') || [];
+    const totalPages = this._getTotalPagesForViewport(stamps);
     const isFirstPage = currentPage === 0;
     const isLastPage = currentPage >= totalPages - 1;
     const hasMultiplePages = totalPages > 1;
@@ -6992,13 +7072,15 @@ class PassportComponent extends Component {
    * @returns {string} HTML string
    */
   _renderPageIndicator() {
-    const { currentPage, totalPages } = this.passportState;
-    
+    const { currentPage } = this.passportState;
+    const stamps = stateManager.getState('stamps') || [];
+    const totalPages = this._getTotalPagesForViewport(stamps);
+
     const dots = Array.from({ length: totalPages }, (_, i) => `
       <span class="page-indicator__dot ${i === currentPage ? 'page-indicator__dot--active' : ''}"
             aria-label="עמוד ${i + 1}"></span>
     `).join('');
-    
+
     return `
       <div class="page-indicator" aria-label="מיקום בדרכון">
         <span class="page-indicator__text">עמוד ${currentPage + 1} מתוך ${totalPages}</span>
@@ -7059,24 +7141,34 @@ class PassportComponent extends Component {
   
   /**
    * Navigates to next page
+   * Desktop: Next spread
+   * Mobile: Next individual page
    * @returns {Promise<void>}
    */
   async navigateNext() {
-    const { currentPage, totalPages, isAnimating } = this.passportState;
+    const { currentPage, isAnimating } = this.passportState;
+    const stamps = stateManager.getState('stamps') || [];
+    const totalPages = this._getTotalPagesForViewport(stamps);
+    
     if (isAnimating || currentPage >= totalPages - 1) return;
     
     this.passportState.isAnimating = true;
-    
-    const pagesEl = document.querySelector('.passport-pages');
-    await animationService.animatePageFlipNext(pagesEl);
-    
     this.passportState.currentPage++;
+    
+    // For desktop, also animate the page flip
+    if (!this._isMobile()) {
+      const pagesEl = document.querySelector('.passport-pages');
+      await animationService.animatePageFlipNext(pagesEl);
+    }
+    
     this.passportState.isAnimating = false;
     this._updatePageDisplay();
   }
   
   /**
    * Navigates to previous page
+   * Desktop: Previous spread
+   * Mobile: Previous individual page
    * @returns {Promise<void>}
    */
   async navigatePrev() {
@@ -7084,25 +7176,40 @@ class PassportComponent extends Component {
     if (isAnimating || currentPage <= 0) return;
     
     this.passportState.isAnimating = true;
-    
-    const pagesEl = document.querySelector('.passport-pages');
-    await animationService.animatePageFlipPrev(pagesEl);
-    
     this.passportState.currentPage--;
+    
+    // For desktop, also animate the page flip
+    if (!this._isMobile()) {
+      const pagesEl = document.querySelector('.passport-pages');
+      await animationService.animatePageFlipPrev(pagesEl);
+    }
+    
     this.passportState.isAnimating = false;
     this._updatePageDisplay();
   }
   
   /**
    * Updates page display after navigation
+   * Handles both desktop (spreads) and mobile (single pages) views
    */
   _updatePageDisplay() {
-    const { currentPage, totalPages } = this.passportState;
+    const { currentPage } = this.passportState;
+    const stamps = stateManager.getState('stamps') || [];
+    const totalPages = this._getTotalPagesForViewport(stamps);
     
-    // Update spread visibility
-    document.querySelectorAll('.passport-spread').forEach((spread, i) => {
-      spread.classList.toggle('passport-spread--active', i === currentPage);
-    });
+    // Update state with correct total
+    this.passportState.totalPages = totalPages;
+    
+    if (this._isMobile()) {
+      // Mobile: Update individual page display
+      this._updateMobilePageDisplay();
+    } else {
+      // Desktop: Update spread visibility
+      document.querySelectorAll('.passport-spread').forEach((spread, i) => {
+        spread.classList.toggle('passport-spread--active', i === currentPage);
+        spread.classList.remove('passport-spread--show-left'); // Clean up mobile class
+      });
+    }
     
     // Update page indicator text
     const indicator = document.querySelector('.page-indicator__text');
@@ -7117,13 +7224,56 @@ class PassportComponent extends Component {
     
     // Update navigation buttons
     this._updateNavigationButtons();
+    
+    // Update page indicator if needed
+    this._updatePageIndicator();
+  }
+  
+  /**
+   * Updates mobile page display
+   * Shows single page at a time within spreads
+   */
+  _updateMobilePageDisplay() {
+    const { currentPage, mobilePageInSpread } = this.passportState;
+    const spreads = document.querySelectorAll('.passport-spread');
+    
+    // Calculate which spread and which page within spread
+    let spreadIndex = 0;
+    let showLeft = false;
+    
+    if (currentPage === 0) {
+      // Profile page (right side of spread 0)
+      spreadIndex = 0;
+      showLeft = false;
+    } else if (currentPage === 1) {
+      // First stamps page (left side of spread 0)
+      spreadIndex = 0;
+      showLeft = true;
+    } else {
+      // Subsequent pages - each spread has 2 pages
+      const adjustedPage = currentPage - 2; // After first 2 pages
+      spreadIndex = 1 + Math.floor(adjustedPage / 2);
+      showLeft = adjustedPage % 2 === 1;
+    }
+    
+    spreads.forEach((spread, i) => {
+      spread.classList.toggle('passport-spread--active', i === spreadIndex);
+      if (i === spreadIndex) {
+        spread.classList.toggle('passport-spread--show-left', showLeft);
+      } else {
+        spread.classList.remove('passport-spread--show-left');
+      }
+    });
   }
   
   /**
    * Updates navigation button states
    */
   _updateNavigationButtons() {
-    const { currentPage, totalPages } = this.passportState;
+    const { currentPage } = this.passportState;
+    const stamps = stateManager.getState('stamps') || [];
+    const totalPages = this._getTotalPagesForViewport(stamps);
+    
     const prevBtn = document.querySelector('.passport-nav__btn--prev');
     const nextBtn = document.querySelector('.passport-nav__btn--next');
     
@@ -7222,11 +7372,22 @@ class PassportComponent extends Component {
     // Set up touch/swipe handlers
     this._setupTouchHandlers();
     
+    // Set up resize handler for mobile/desktop detection
+    window.addEventListener('resize', this._resizeHandler);
+    
     // Trigger stamp slam animations for new stamps
     this._animateNewStamps();
     
     // Check for new stamps and trigger celebrations (Story 3.5)
     this._checkForNewStampCelebrations();
+  }
+  
+  /**
+   * Unmounts the component and cleans up
+   */
+  unmount() {
+    super.unmount();
+    window.removeEventListener('resize', this._resizeHandler);
   }
   
   /**
@@ -7397,9 +7558,37 @@ class PassportComponent extends Component {
   updatePassportState(isOpen) {
     this.passportState.isOpen = isOpen;
     
+    const passport = document.querySelector('.passport');
+    
+    // Reset page state when opening passport
+    if (isOpen) {
+      this.passportState.currentPage = 0;
+      this.passportState.mobilePageInSpread = 0;
+      // Reset any mobile page display classes
+      document.querySelectorAll('.passport-spread').forEach((spread, i) => {
+        spread.classList.toggle('passport-spread--active', i === 0);
+        spread.classList.remove('passport-spread--show-left');
+      });
+      
+      // Add animated class after a short delay to enable transitions (prevents mobile glitch)
+      if (passport) {
+        passport.classList.remove('passport--animated');
+        // Use requestAnimationFrame to ensure DOM has settled before adding transition class
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            passport.classList.add('passport--animated');
+          });
+        });
+      }
+    } else {
+      // Remove animated class when closing
+      if (passport) {
+        passport.classList.remove('passport--animated');
+      }
+    }
+    
     // Update CTA button and passport aria
     const cta = document.querySelector('.passport-summary__cta');
-    const passport = document.querySelector('.passport');
     const cover = document.querySelector('.passport-cover');
     const pagesHeader = document.querySelector('.passport-pages__header');
     const navContainer = document.querySelector('.passport-nav');
@@ -7440,18 +7629,8 @@ class PassportComponent extends Component {
       }
     }
     
-    // FIX Story 7.6: Add/remove navigation arrows when state changes
-    if (passport) {
-      if (isOpen && !navContainer) {
-        // Add navigation arrows and swipe hint
-        passport.insertAdjacentHTML('beforeend', this._renderNavigationArrows());
-      } else if (!isOpen && navContainer) {
-        // Remove navigation arrows
-        navContainer.remove();
-        const swipeHint = document.querySelector('.passport-swipe-hint');
-        if (swipeHint) swipeHint.remove();
-      }
-    }
+    // Update navigation button states
+    this._updateNavigationButtons();
     
     // Update page indicator if needed
     if (isOpen) {
@@ -7463,10 +7642,12 @@ class PassportComponent extends Component {
    * Updates the page indicator display
    */
   _updatePageIndicator() {
-    const { currentPage, totalPages } = this.passportState;
+    const { currentPage } = this.passportState;
+    const stamps = stateManager.getState('stamps') || [];
+    const totalPages = this._getTotalPagesForViewport(stamps);
     const indicatorContainer = document.querySelector('.passport-container');
     let indicator = document.querySelector('.page-indicator');
-    
+
     if (totalPages > 1) {
       const indicatorHtml = this._renderPageIndicator();
       if (!indicator && indicatorContainer) {
@@ -13087,12 +13268,12 @@ document.addEventListener('DOMContentLoaded', () => {
     stateManager.setState({ passportOpen: true });
     
     // Update component state
-    const passportComponent = app.getComponent('passport');
+    const passportComponent = app.getComponent('PassportComponent');
     if (passportComponent && passportComponent.updatePassportState) {
       passportComponent.updatePassportState(true);
     }
   });
-  
+
   // Close passport action - triggers reverse 3D flip animation
   app.registerAction('close-passport', async (target, event) => {
     if (event) event.stopPropagation();
@@ -13114,27 +13295,51 @@ document.addEventListener('DOMContentLoaded', () => {
     stateManager.setState({ passportOpen: false });
     
     // Update component state
-    const passportComponent = app.getComponent('passport');
+    const passportComponent = app.getComponent('PassportComponent');
     if (passportComponent && passportComponent.updatePassportState) {
       passportComponent.updatePassportState(false);
     }
   });
-  
+
   // Passport page navigation - Next page (Story 3.3)
   // FIX Story 7.6: Added event parameter and stopPropagation to prevent bubbling
   app.registerAction('passport-next', async (target, event) => {
     if (event) event.stopPropagation();
-    const passportComponent = app.getComponent('passport');
+    
+    // First open passport if it's closed
+    const passportEl = document.querySelector('.passport');
+    if (passportEl && !passportEl.classList.contains('passport--open')) {
+      await animationService.animatePassportOpen(passportEl);
+      stateManager.setState({ passportOpen: true });
+      const passportComponent = app.getComponent('PassportComponent');
+      if (passportComponent && passportComponent.updatePassportState) {
+        passportComponent.updatePassportState(true);
+      }
+    }
+    
+    const passportComponent = app.getComponent('PassportComponent');
     if (passportComponent && passportComponent.navigateNext) {
       await passportComponent.navigateNext();
     }
   });
-  
+
   // Passport page navigation - Previous page (Story 3.3)
   // FIX Story 7.6: Added event parameter and stopPropagation to prevent bubbling
   app.registerAction('passport-prev', async (target, event) => {
     if (event) event.stopPropagation();
-    const passportComponent = app.getComponent('passport');
+    
+    // First open passport if it's closed
+    const passportEl = document.querySelector('.passport');
+    if (passportEl && !passportEl.classList.contains('passport--open')) {
+      await animationService.animatePassportOpen(passportEl);
+      stateManager.setState({ passportOpen: true });
+      const passportComponent = app.getComponent('PassportComponent');
+      if (passportComponent && passportComponent.updatePassportState) {
+        passportComponent.updatePassportState(true);
+      }
+    }
+    
+    const passportComponent = app.getComponent('PassportComponent');
     if (passportComponent && passportComponent.navigatePrev) {
       await passportComponent.navigatePrev();
     }
