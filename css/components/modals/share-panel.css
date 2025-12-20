@@ -1,0 +1,337 @@
+/* ============================================================================
+   PassportCard Refer - Share Panel Styles
+   ============================================================================
+   Extracted from style.css - Phase 13
+   Contains share panel overlay, buttons, and link field
+   ========================================================================== */
+
+/* =========================================================================
+   SHARE PANEL OVERLAY
+   ========================================================================= */
+
+.share-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  padding: var(--space-4);
+}
+
+.share-panel-overlay--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* =========================================================================
+   SHARE PANEL
+   ========================================================================= */
+
+.share-panel {
+  background: var(--color-surface);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  max-width: 400px;
+  width: 100%;
+  max-height: calc(100vh - var(--space-8));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: sharePanelSlideUp 0.25s ease-out;
+}
+
+@keyframes sharePanelSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================================
+   SHARE PANEL HEADER
+   ========================================================================= */
+
+.share-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.share-panel__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-gray-900);
+  margin: 0;
+}
+
+.share-panel__title .ti {
+  color: var(--color-primary);
+  font-size: 1.25rem;
+}
+
+.share-panel__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--color-gray-500);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.share-panel__close:hover {
+  background: var(--color-gray-100);
+  color: var(--color-gray-900);
+}
+
+.share-panel__close:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.share-panel__close .ti {
+  font-size: 1.25rem;
+}
+
+/* =========================================================================
+   SHARE PANEL CONTENT
+   ========================================================================= */
+
+.share-panel__content {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  overflow-y: auto;
+}
+
+.share-panel__position {
+  font-size: var(--text-sm);
+  color: var(--color-gray-600);
+  margin: 0;
+}
+
+.share-panel__position strong {
+  color: var(--color-gray-900);
+  font-weight: var(--font-semibold);
+}
+
+/* =========================================================================
+   LINK FIELD
+   ========================================================================= */
+
+.share-panel__link-field {
+  display: flex;
+  gap: var(--space-2);
+  align-items: stretch;
+}
+
+.share-panel__link-input {
+  flex: 1;
+  padding: var(--space-3);
+  font-size: var(--text-sm);
+  font-family: 'Courier New', monospace;
+  direction: ltr;
+  text-align: left;
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-gray-700);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.share-panel__link-input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  border-color: var(--color-primary);
+}
+
+.share-panel__copy-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+  white-space: nowrap;
+  min-height: 44px;
+}
+
+.share-panel__copy-btn:hover {
+  background: var(--color-primary-dark);
+}
+
+.share-panel__copy-btn:active {
+  transform: scale(0.98);
+}
+
+.share-panel__copy-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.share-panel__copy-btn--copied {
+  background: var(--color-success);
+}
+
+.share-panel__copy-btn--copied:hover {
+  background: var(--color-success);
+}
+
+.share-panel__copy-btn .ti {
+  font-size: 1.125rem;
+}
+
+/* =========================================================================
+   SHARE BUTTONS
+   ========================================================================= */
+
+.share-panel__buttons {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.share-panel__btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.1s ease;
+  min-height: 48px;
+  cursor: pointer;
+}
+
+.share-panel__btn:active {
+  transform: scale(0.98);
+}
+
+.share-panel__btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.share-panel__btn .ti {
+  font-size: 1.25rem;
+}
+
+/* WhatsApp Button */
+.share-panel__btn--whatsapp {
+  background: #25D366;
+  color: var(--color-white);
+}
+
+.share-panel__btn--whatsapp:hover {
+  background: #1DA851;
+}
+
+/* Email Button */
+.share-panel__btn--email {
+  background: var(--color-gray-100);
+  color: var(--color-gray-900);
+  border: 1px solid var(--color-border);
+}
+
+.share-panel__btn--email:hover {
+  background: var(--color-gray-200);
+}
+
+/* =========================================================================
+   NATIVE SHARE
+   ========================================================================= */
+
+.share-panel__native {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border);
+}
+
+/* =========================================================================
+   SHARE PANEL FOOTER
+   ========================================================================= */
+
+.share-panel__footer {
+  padding: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+/* =========================================================================
+   RESPONSIVE - Mobile
+   ========================================================================= */
+
+@media (max-width: 599px) {
+  .share-panel-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+  
+  .share-panel {
+    max-width: none;
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    max-height: 85vh;
+    animation: sharePanelSlideUpMobile 0.3s ease-out;
+  }
+  
+  @keyframes sharePanelSlideUpMobile {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .share-panel__buttons {
+    flex-direction: column;
+  }
+}
+
+/* =========================================================================
+   REDUCED MOTION
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .share-panel-overlay,
+  .share-panel,
+  .share-panel__copy-btn,
+  .share-panel__btn,
+  .share-panel__close {
+    transition: none;
+    animation: none;
+  }
+}

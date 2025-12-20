@@ -1,0 +1,296 @@
+/* ============================================================================
+   PassportCard Refer - Button Styles
+   ============================================================================
+   Extracted from style.css - Phase 12
+   Contains all button component styles
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   BASE BUTTON
+   --------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  font-family: var(--font-family);
+  border-radius: var(--radius-md);
+  transition: background-color var(--duration-fast) var(--ease-default),
+              transform var(--duration-fast) var(--ease-default),
+              opacity var(--duration-fast) var(--ease-default);
+  cursor: pointer;
+  min-height: 48px;
+  min-width: 48px;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+   PRIMARY BUTTON
+   --------------------------------------------------------------------------- */
+
+.btn--primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+}
+
+.btn--primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn--primary:disabled {
+  background-color: var(--color-gray-300);
+  color: var(--color-gray-500);
+  cursor: not-allowed;
+}
+
+.btn--primary:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(225, 5, 20, 0.2);
+}
+
+/* ---------------------------------------------------------------------------
+   SECONDARY BUTTON
+   --------------------------------------------------------------------------- */
+
+.btn--secondary {
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-medium);
+}
+
+/* ---------------------------------------------------------------------------
+   DANGER BUTTON
+   --------------------------------------------------------------------------- */
+
+.btn--danger {
+  background: var(--color-error);
+  color: var(--color-white);
+}
+
+.btn--danger:hover:not(:disabled) {
+  background: #DC2626;
+}
+
+.btn--danger:focus-visible {
+  outline: 2px solid var(--color-error);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+}
+
+/* ---------------------------------------------------------------------------
+   BUTTON MODIFIERS
+   --------------------------------------------------------------------------- */
+
+.btn--full {
+  width: 100%;
+}
+
+.btn--loading {
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------------------
+   LOADING SPINNER
+   --------------------------------------------------------------------------- */
+
+.spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--color-white);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   QUICK ACTION BUTTONS
+   --------------------------------------------------------------------------- */
+
+/* Quick Action Button Base */
+.quick-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  min-height: 56px;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  cursor: pointer;
+  transition: transform 0.15s var(--ease-default),
+              box-shadow 0.15s var(--ease-default),
+              background-color 0.15s var(--ease-default);
+  border: none;
+  text-decoration: none;
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-2px);
+}
+
+.quick-action-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.quick-action-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.quick-action-btn:active {
+  transform: translateY(0);
+}
+
+/* Primary Action Button */
+.quick-action-btn--primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #C50412 100%);
+  color: var(--color-white);
+  box-shadow: var(--shadow-md), 0 4px 12px rgba(225, 5, 20, 0.3);
+  min-height: 64px;
+  font-size: var(--text-lg);
+}
+
+.quick-action-btn--primary:hover {
+  box-shadow: var(--shadow-lg), 0 6px 16px rgba(225, 5, 20, 0.4);
+}
+
+.quick-action-btn--primary .quick-action-btn__icon {
+  font-size: 1.5rem;
+}
+
+/* Secondary Action Button */
+.quick-action-btn--secondary {
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.quick-action-btn--secondary:hover {
+  background: var(--color-surface-hover);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-medium);
+}
+
+.quick-action-btn--secondary .quick-action-btn__icon {
+  color: var(--color-primary);
+}
+
+/* Button Icon */
+.quick-action-btn__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+/* Button Label */
+.quick-action-btn__label {
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------------
+   LOGIN FORM BUTTON INTERACTIONS
+   --------------------------------------------------------------------------- */
+
+.login-form .btn--primary {
+  transition: 
+    background-color 200ms ease,
+    transform 150ms ease,
+    box-shadow 200ms ease;
+}
+
+.login-form .btn--primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(225, 5, 20, 0.3);
+}
+
+.login-form .btn--primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 2px 6px rgba(225, 5, 20, 0.2);
+}
+
+/* ---------------------------------------------------------------------------
+   RESPONSIVE - Quick Actions
+   --------------------------------------------------------------------------- */
+
+@media (min-width: 600px) {
+  .quick-action-btn--primary {
+    flex: 1 1 100%;
+  }
+  
+  .quick-action-btn--secondary {
+    flex: 1 1 calc(50% - var(--space-3) / 2);
+  }
+}
+
+@media (min-width: 1024px) {
+  .quick-action-btn--primary {
+    flex: 2;
+    min-height: 72px;
+  }
+  
+  .quick-action-btn--secondary {
+    flex: 1;
+    min-height: 72px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   REDUCED MOTION
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .quick-action-btn {
+    transition: none;
+  }
+  
+  .btn:active:not(:disabled),
+  .quick-action-btn:hover,
+  .quick-action-btn:active {
+    transform: none;
+  }
+  
+  .login-form .btn--primary {
+    transition: none;
+  }
+  
+  .login-form .btn--primary:hover:not(:disabled),
+  .login-form .btn--primary:active:not(:disabled) {
+    transform: none;
+  }
+  
+  .spinner {
+    animation-duration: 0.01ms !important;
+  }
+}

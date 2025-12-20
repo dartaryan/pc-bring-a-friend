@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5">
   <meta name="theme-color" content="#E10514">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
   <title>PassportCard Refer - דשבורד</title>
   
   <!-- Preconnect hints for external resources (performance optimization) -->
@@ -25,8 +26,8 @@
   <!-- GSAP Animation Library (for smooth cross-browser animations) -->
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="style.css">
+  <!-- Stylesheet (Modular CSS) -->
+  <link rel="stylesheet" href="css/main.css">
 </head>
 <body data-page="dashboard">
   <!-- Skip Navigation Link (Accessibility) -->
@@ -50,8 +51,8 @@
   <!-- Modal Container -->
   <div id="modal-container"></div>
   
-  <!-- Application Script -->
-  <script src="script.js"></script>
+  <!-- Application Script (ES6 Modules) -->
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
 

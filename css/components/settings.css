@@ -1,0 +1,373 @@
+/* ============================================================================
+   PassportCard Refer - Settings Page Styles
+   ============================================================================
+   Extracted from style.css - Phase 12
+   Contains settings page styles (Story 6.1 - Enhanced)
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   SETTINGS PAGE CONTAINER
+   --------------------------------------------------------------------------- */
+
+.settings-page {
+  min-height: calc(100vh - 140px);
+  background: var(--color-gray-50);
+  padding: var(--space-4);
+  padding-bottom: calc(var(--space-4) + 80px);
+}
+
+.settings-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ---------------------------------------------------------------------------
+   SECTION LAYOUT
+   --------------------------------------------------------------------------- */
+
+.settings-section {
+  margin-bottom: var(--space-5);
+}
+
+.settings-section__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-gray-600);
+  margin: 0 0 var(--space-3);
+  padding-inline-start: var(--space-1);
+}
+
+.settings-section__title .ti {
+  font-size: 1.25rem;
+  color: var(--color-primary);
+}
+
+/* ---------------------------------------------------------------------------
+   CARDS
+   --------------------------------------------------------------------------- */
+
+.settings-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.settings-card--profile {
+  padding-top: var(--space-5);
+}
+
+.settings-card--danger {
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.settings-card__description {
+  font-size: var(--text-sm);
+  color: var(--color-gray-600);
+  margin: 0 0 var(--space-4);
+  line-height: 1.6;
+}
+
+/* ---------------------------------------------------------------------------
+   PROFILE SECTION
+   --------------------------------------------------------------------------- */
+
+.settings-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.settings-profile__avatar {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #B30410 100%);
+  color: var(--color-white);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  margin-bottom: var(--space-3);
+  box-shadow: var(--shadow-md);
+}
+
+.settings-profile__info {
+  text-align: center;
+}
+
+.settings-profile__name {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-gray-900);
+  margin: 0 0 var(--space-1);
+}
+
+.settings-profile__department {
+  font-size: var(--text-sm);
+  color: var(--color-gray-500);
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   FIELDS
+   --------------------------------------------------------------------------- */
+
+.settings-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.settings-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) 0;
+}
+
+.settings-field__label {
+  font-size: var(--text-sm);
+  color: var(--color-gray-500);
+}
+
+.settings-field__value {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-gray-900);
+}
+
+.settings-field__value--ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* ---------------------------------------------------------------------------
+   STATS SECTION
+   --------------------------------------------------------------------------- */
+
+.settings-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+.settings-stat {
+  text-align: center;
+  padding: var(--space-3);
+  background: var(--color-gray-50);
+  border-radius: var(--radius-md);
+}
+
+.settings-stat__value {
+  display: block;
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-gray-900);
+  margin-bottom: var(--space-1);
+}
+
+.settings-stat__value--gold {
+  color: var(--color-gold, #F59E0B);
+}
+
+.settings-stat__label {
+  font-size: var(--text-xs);
+  color: var(--color-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ---------------------------------------------------------------------------
+   TOGGLE SECTION
+   --------------------------------------------------------------------------- */
+
+.settings-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.settings-toggle__content {
+  flex: 1;
+}
+
+.settings-toggle__label {
+  display: block;
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--color-gray-900);
+  cursor: pointer;
+}
+
+.settings-toggle__hint {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--color-gray-500);
+  margin-top: var(--space-1);
+}
+
+.settings-hint {
+  font-size: var(--text-xs);
+  color: var(--color-gray-400);
+  margin: var(--space-3) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-light);
+}
+
+/* ---------------------------------------------------------------------------
+   ABOUT SECTION
+   --------------------------------------------------------------------------- */
+
+.settings-about {
+  text-align: center;
+}
+
+.settings-about__logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.settings-about__logo-img {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+.settings-about__version {
+  font-size: var(--text-sm);
+  color: var(--color-gray-500);
+}
+
+.settings-about__description {
+  font-size: var(--text-sm);
+  color: var(--color-gray-600);
+  margin: 0 0 var(--space-4);
+  line-height: 1.6;
+}
+
+.settings-about__links {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* ---------------------------------------------------------------------------
+   FOOTER
+   --------------------------------------------------------------------------- */
+
+.settings-footer {
+  margin-top: var(--space-6);
+  text-align: center;
+  padding-bottom: var(--space-4);
+}
+
+.settings-disclaimer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-gray-400);
+  padding: var(--space-2) var(--space-4);
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: var(--radius-full);
+  margin: 0 0 var(--space-3);
+}
+
+.settings-disclaimer .ti {
+  font-size: 1rem;
+}
+
+.settings-copyright {
+  font-size: var(--text-xs);
+  color: var(--color-gray-400);
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   ERROR STATE
+   --------------------------------------------------------------------------- */
+
+.settings-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+  padding: var(--space-4);
+}
+
+.settings-error p {
+  font-size: var(--text-lg);
+  color: var(--color-gray-600);
+  margin-bottom: var(--space-4);
+}
+
+/* ---------------------------------------------------------------------------
+   RESPONSIVE - Tablet/Desktop
+   --------------------------------------------------------------------------- */
+
+@media (min-width: 600px) {
+  .settings-page {
+    padding: var(--space-6);
+  }
+  
+  .settings-profile {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--space-4);
+    text-align: right;
+  }
+  
+  .settings-profile__avatar {
+    margin-bottom: 0;
+  }
+  
+  .settings-profile__info {
+    text-align: right;
+  }
+  
+  .settings-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .settings-about__links {
+    gap: var(--space-4);
+  }
+}
+
+@media (min-width: 1024px) {
+  .settings-page {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-8);
+  }
+  
+  .settings-container {
+    max-width: 700px;
+  }
+  
+  .settings-card {
+    padding: var(--space-5);
+  }
+  
+  .settings-profile__avatar {
+    width: 96px;
+    height: 96px;
+    font-size: var(--text-4xl);
+  }
+}

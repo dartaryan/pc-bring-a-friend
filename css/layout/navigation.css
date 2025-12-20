@@ -1,0 +1,296 @@
+/* ============================================================================
+   NAVIGATION COMPONENTS
+   ============================================================================
+   Bottom navigation (mobile) and sidebar navigation (desktop)
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   BOTTOM NAVIGATION (Mobile < 1024px)
+   --------------------------------------------------------------------------- */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: var(--z-nav);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+  min-height: 44px;
+  padding: var(--space-1) var(--space-2);
+  background: none;
+  border: none;
+  color: var(--color-gray-500);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-default);
+  gap: 2px;
+}
+
+.bottom-nav__item:hover {
+  color: var(--color-gray-700);
+}
+
+.bottom-nav__item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+  border-radius: var(--radius-md);
+}
+
+.bottom-nav__item--active {
+  color: var(--color-primary);
+}
+
+.bottom-nav__item--active .bottom-nav__icon {
+  color: var(--color-primary);
+}
+
+.bottom-nav__icon {
+  font-size: 24px;
+}
+
+.bottom-nav__label {
+  font-weight: var(--font-medium);
+  white-space: nowrap;
+}
+
+/* Hide bottom nav on desktop */
+@media (min-width: 1024px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+
+/* Very narrow screens */
+@media (max-width: 359px) {
+  .bottom-nav {
+    height: 56px;
+  }
+
+  .bottom-nav__item {
+    min-width: 50px;
+    padding: var(--space-1);
+    gap: 1px;
+  }
+
+  .bottom-nav__icon {
+    font-size: 20px;
+  }
+
+  .bottom-nav__label {
+    font-size: 10px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   SIDEBAR NAVIGATION (Desktop >= 1024px)
+   --------------------------------------------------------------------------- */
+
+.sidebar-nav {
+  position: fixed;
+  top: 0;
+  inset-inline-start: 0; /* RTL: sidebar on right (start = right in RTL) */
+  width: 240px;
+  height: 100vh;
+  background: var(--color-surface);
+  border-inline-end: 1px solid var(--color-border); /* RTL: border on left side of sidebar */
+  display: none;
+  flex-direction: column;
+  z-index: var(--z-nav);
+}
+
+@media (min-width: 1024px) {
+  .sidebar-nav {
+    display: flex;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Sidebar Brand/Logo
+   --------------------------------------------------------------------------- */
+
+.sidebar-nav__brand {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.sidebar-nav__logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  transition: background-color var(--duration-fast) var(--ease-default);
+}
+
+.sidebar-nav__logo:hover {
+  background: var(--color-gray-50);
+}
+
+.sidebar-nav__logo:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.sidebar-nav__logo-img {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
+/* ---------------------------------------------------------------------------
+   Sidebar Menu
+   --------------------------------------------------------------------------- */
+
+.sidebar-nav__menu {
+  flex: 1;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.sidebar-nav__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3);
+  background: none;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-gray-600);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-default),
+              color var(--duration-fast) var(--ease-default);
+  text-align: right; /* RTL alignment */
+}
+
+.sidebar-nav__item:hover {
+  background: var(--color-gray-50);
+  color: var(--color-gray-900);
+}
+
+.sidebar-nav__item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.sidebar-nav__item--active {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.sidebar-nav__item--active .sidebar-nav__icon {
+  color: var(--color-primary);
+}
+
+.sidebar-nav__icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.sidebar-nav__label {
+  flex: 1;
+}
+
+/* ---------------------------------------------------------------------------
+   Sidebar User Section
+   --------------------------------------------------------------------------- */
+
+.sidebar-nav__user {
+  padding: var(--space-4);
+  border-top: 1px solid var(--color-border-light);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.sidebar-nav__user-avatar {
+  width: 40px;
+  height: 40px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--font-bold);
+  font-size: var(--text-sm);
+  flex-shrink: 0;
+}
+
+.sidebar-nav__user-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sidebar-nav__user-name {
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+  color: var(--color-gray-900);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-nav__user-dept {
+  font-size: var(--text-xs);
+  color: var(--color-gray-500);
+}
+
+/* ---------------------------------------------------------------------------
+   Generic Navigation Item (shared)
+   --------------------------------------------------------------------------- */
+
+.nav-item,
+.sidebar-nav__link {
+  min-height: 44px;
+  padding: var(--space-3);
+}
+
+/* Touch target spacing */
+.nav-item + .nav-item {
+  margin-inline-start: var(--space-2);
+}
+
+/* Hover state for pointer devices */
+@media (hover: hover) and (pointer: fine) {
+  .nav-item:hover,
+  .sidebar-nav__link:hover {
+    background: var(--color-gray-50);
+  }
+}
+
+/* Focus states for accessibility */
+.nav-item:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .nav-item,
+  .bottom-nav__item,
+  .sidebar-nav__item {
+    transition: none !important;
+  }
+}

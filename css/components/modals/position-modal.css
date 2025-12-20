@@ -1,0 +1,459 @@
+/* ============================================================================
+   PassportCard Refer - Position Detail Modal Styles
+   ============================================================================
+   Extracted from style.css - Phase 13
+   Contains position detail modal and bonus breakdown
+   ========================================================================== */
+
+/* Body scroll lock when modal open */
+body.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}
+
+/* =========================================================================
+   POSITION MODAL OVERLAY
+   ========================================================================= */
+
+.modal--position-detail {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: var(--z-modal);
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal--position-detail.modal--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal--position-detail.modal--closing {
+  opacity: 0;
+}
+
+.modal--position-detail.modal--no-animation {
+  transition: none;
+}
+
+/* =========================================================================
+   POSITION MODAL CONTAINER - Mobile (Bottom Sheet)
+   ========================================================================= */
+
+.position-detail-modal {
+  background: var(--color-surface);
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  max-height: 90vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal--visible .position-detail-modal {
+  transform: translateY(0);
+}
+
+.modal--closing .position-detail-modal {
+  transform: translateY(100%);
+}
+
+/* Desktop: Centered */
+@media (min-width: 1024px) {
+  .modal--position-detail {
+    align-items: center;
+  }
+  
+  .position-detail-modal {
+    border-radius: var(--radius-2xl);
+    width: 100%;
+    max-width: 600px;
+    max-height: 85vh;
+    transform: scale(0.95) translateY(20px);
+    opacity: 0;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  }
+  
+  .modal--visible .position-detail-modal {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  
+  .modal--closing .position-detail-modal {
+    transform: scale(0.95) translateY(20px);
+    opacity: 0;
+  }
+}
+
+/* =========================================================================
+   MODAL DRAG HANDLE (Mobile Only)
+   ========================================================================= */
+
+.modal__drag-handle {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-3) var(--space-4);
+  cursor: grab;
+  flex-shrink: 0;
+}
+
+.modal__drag-bar {
+  width: 40px;
+  height: 4px;
+  background: var(--color-gray-300);
+  border-radius: var(--radius-full);
+}
+
+@media (min-width: 1024px) {
+  .modal__drag-handle {
+    display: none;
+  }
+}
+
+/* =========================================================================
+   MODAL HEADER
+   ========================================================================= */
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.modal__close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--color-gray-500);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.modal__close-btn:hover {
+  background: var(--color-gray-100);
+  color: var(--color-gray-700);
+}
+
+.modal__close-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.modal__close-btn .ti {
+  font-size: 1.5rem;
+}
+
+.modal__title {
+  flex: 1;
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--color-gray-900);
+  margin: 0;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal__header-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.modal__share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.modal__share-btn:hover {
+  background: rgba(225, 5, 20, 0.1);
+}
+
+.modal__share-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.modal__share-btn .ti {
+  font-size: 1.25rem;
+}
+
+/* =========================================================================
+   MODAL CONTENT (Scrollable)
+   ========================================================================= */
+
+.modal__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* =========================================================================
+   MODAL FOOTER (Fixed CTA)
+   ========================================================================= */
+
+.modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.modal__footer-info {
+  flex-shrink: 0;
+}
+
+.modal__footer-bonus {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: #F1C40F;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.modal__cta {
+  flex: 1;
+  max-width: 200px;
+}
+
+/* =========================================================================
+   POSITION DETAIL CONTENT
+   ========================================================================= */
+
+.position-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* Meta Info Row */
+.position-detail__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.position-detail__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-gray-600);
+}
+
+.position-detail__meta-item .ti {
+  font-size: 1.125rem;
+  color: var(--color-primary);
+}
+
+/* Badges */
+.position-detail__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Section Styling */
+.position-detail__section {
+  background: var(--color-gray-50);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.position-detail__section--bonus {
+  background: linear-gradient(135deg, rgba(241, 196, 15, 0.08) 0%, rgba(241, 196, 15, 0.02) 100%);
+  border: 1px solid rgba(241, 196, 15, 0.2);
+}
+
+.position-detail__section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-gray-900);
+  margin: 0 0 var(--space-3);
+}
+
+.position-detail__section-title .ti {
+  font-size: 1.25rem;
+  color: var(--color-primary);
+}
+
+/* Description */
+.position-detail__description {
+  font-size: var(--text-base);
+  color: var(--color-gray-800);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Requirements List */
+.position-detail__requirements {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.position-detail__requirement {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-gray-800);
+  line-height: 1.5;
+}
+
+.position-detail__requirement .ti {
+  flex-shrink: 0;
+  font-size: 1rem;
+  color: var(--color-success);
+  margin-top: 2px;
+}
+
+/* Team Info */
+.position-detail__team-info {
+  font-size: var(--text-sm);
+  color: var(--color-gray-600);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* =========================================================================
+   BONUS BREAKDOWN
+   ========================================================================= */
+
+.bonus-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.bonus-breakdown__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+
+.bonus-breakdown__row--total {
+  padding-top: var(--space-3);
+}
+
+.bonus-breakdown__icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+
+.bonus-breakdown__label {
+  flex: 1;
+  font-size: var(--text-sm);
+  color: var(--color-gray-800);
+}
+
+.bonus-breakdown__points {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: #F1C40F;
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.bonus-breakdown__points--multiplied {
+  color: var(--color-primary);
+}
+
+.bonus-breakdown__points--total {
+  font-size: var(--text-base);
+  color: var(--color-success);
+}
+
+.bonus-breakdown__multiplier {
+  font-size: var(--text-xs);
+  color: var(--color-gray-500);
+}
+
+.bonus-breakdown__divider {
+  height: 1px;
+  background: var(--color-gray-200);
+  margin: var(--space-2) 0;
+}
+
+.bonus-breakdown__campaign-note {
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+  margin: var(--space-3) 0 0;
+  padding: var(--space-2);
+  background: rgba(225, 5, 20, 0.08);
+  border-radius: var(--radius-md);
+}
+
+/* =========================================================================
+   REDUCED MOTION
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .modal--position-detail,
+  .position-detail-modal,
+  .modal__close-btn,
+  .modal__share-btn {
+    transition: none;
+  }
+  
+  .modal--visible .position-detail-modal {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  @media (min-width: 1024px) {
+    .modal--visible .position-detail-modal {
+      transform: none;
+    }
+  }
+}

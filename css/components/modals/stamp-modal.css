@@ -1,0 +1,292 @@
+/* ============================================================================
+   PassportCard Refer - Stamp Detail Modal Styles
+   ============================================================================
+   Extracted from style.css - Phase 13
+   Contains stamp detail modal and celebration effects
+   ========================================================================== */
+
+/* =========================================================================
+   STAMP DETAIL MODAL
+   ========================================================================= */
+
+/* Modal Overlay */
+.modal--stamp-detail {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: var(--z-modal);
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal--stamp-detail.modal--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal--stamp-detail.modal--closing {
+  opacity: 0;
+}
+
+/* Modal Content - Mobile (Slide Up) */
+.stamp-modal {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  max-height: 85vh;
+  width: 100%;
+  max-width: 500px;
+  padding: var(--space-6);
+  padding-bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal--visible .stamp-modal {
+  transform: translateY(0);
+}
+
+.modal--closing .stamp-modal {
+  transform: translateY(100%);
+}
+
+/* Desktop: Centered Modal */
+@media (min-width: 1024px) {
+  .modal--stamp-detail {
+    align-items: center;
+  }
+  
+  .stamp-modal {
+    border-radius: var(--radius-xl);
+    transform: scale(0.95) translateY(20px);
+    opacity: 0;
+    max-height: 80vh;
+  }
+  
+  .modal--visible .stamp-modal {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  
+  .modal--closing .stamp-modal {
+    transform: scale(0.95) translateY(20px);
+    opacity: 0;
+  }
+}
+
+/* Close Button */
+.stamp-modal .modal-close {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--color-gray-100);
+  color: var(--color-gray-500);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.stamp-modal .modal-close:hover {
+  background: var(--color-gray-200);
+  color: var(--color-gray-700);
+}
+
+.stamp-modal .modal-close:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Stamp Display */
+.stamp-modal__stamp {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-8) 0;
+}
+
+/* Modal Details */
+.stamp-modal__details {
+  text-align: center;
+}
+
+.stamp-modal__title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-gray-900);
+  margin: 0 0 var(--space-4);
+}
+
+.stamp-modal__points {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-3) var(--space-6);
+  background: linear-gradient(135deg, #F1C40F 0%, #F39C12 100%);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
+}
+
+.stamp-modal__points-value {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: #5D4E37;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.stamp-modal__points-label {
+  font-size: var(--text-sm);
+  color: #5D4E37;
+  opacity: 0.8;
+}
+
+.stamp-modal__description {
+  font-size: var(--text-base);
+  color: var(--color-gray-600);
+  line-height: 1.6;
+  margin: 0 0 var(--space-6);
+  padding: 0 var(--space-4);
+}
+
+/* Meta Information */
+.stamp-modal__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--color-gray-50);
+  border-radius: var(--radius-md);
+}
+
+.stamp-modal__meta-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-gray-500);
+}
+
+.stamp-modal__meta-item .ti {
+  color: var(--color-primary);
+}
+
+/* =========================================================================
+   CELEBRATION MESSAGE OVERLAY
+   ========================================================================= */
+
+.celebration-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  z-index: calc(var(--z-modal) + 10);
+  pointer-events: none;
+  opacity: 0;
+  transition: transform 0.5s var(--ease-bounce), opacity 0.3s ease;
+}
+
+.celebration-message--visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.celebration-message__text {
+  display: block;
+  padding: var(--space-6) var(--space-8);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(30, 30, 30, 0.95) 100%);
+  color: white;
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  text-align: center;
+  border-radius: var(--radius-xl);
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* =========================================================================
+   CELEBRATION TOAST
+   ========================================================================= */
+
+.toast--celebration {
+  --celebration-color: #00B894;
+  
+  background: linear-gradient(135deg, 
+    var(--celebration-color) 0%, 
+    color-mix(in srgb, var(--celebration-color) 80%, black) 100%
+  );
+  color: white;
+  animation: toastCelebration 0.5s var(--ease-bounce);
+}
+
+.toast--celebration .toast__sparkle {
+  margin-inline-start: var(--space-2);
+  animation: sparkle 1s ease-in-out infinite;
+}
+
+@keyframes toastCelebration {
+  0% {
+    transform: translateX(100%) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(-10%) scale(1.05);
+  }
+  100% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    opacity: 0.7;
+  }
+}
+
+/* =========================================================================
+   REDUCED MOTION
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .modal--stamp-detail,
+  .stamp-modal,
+  .celebration-message,
+  .toast--celebration {
+    transition: none;
+  }
+  
+  .modal--visible .stamp-modal {
+    transform: none;
+  }
+  
+  .celebration-message--visible {
+    transform: translate(-50%, -50%);
+  }
+  
+  .toast--celebration {
+    animation: none;
+  }
+  
+  .toast--celebration .toast__sparkle {
+    animation: none;
+  }
+}

@@ -1,0 +1,343 @@
+/* ============================================================================
+   PassportCard Refer - Login Styles
+   ============================================================================
+   Contains login screen, hero, logo, and form styles
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   LOGIN SCREEN CONTAINER
+   --------------------------------------------------------------------------- */
+
+.login-screen {
+  min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
+  min-height: -webkit-fill-available;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  padding-top: calc(var(--space-4) + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  background: var(--color-white);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle decorative background elements */
+.login-screen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(225, 5, 20, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(225, 5, 20, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(225, 5, 20, 0.02) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure login content sits above decorative elements */
+.login-screen > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------------------------------------------------------------------------
+   LOGIN HERO SECTION
+   --------------------------------------------------------------------------- */
+
+.login-hero {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.login-logo {
+  width: 160px;
+  height: auto;
+  margin-inline: auto;
+  margin-bottom: var(--space-4);
+}
+
+.login-logo__img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.login-title {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.login-subtitle {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+}
+
+/* ---------------------------------------------------------------------------
+   LOGIN FORM
+   --------------------------------------------------------------------------- */
+
+.login-form {
+  width: 100%;
+  max-width: 360px;
+}
+
+/* Enhanced input focus state with subtle scale */
+.login-form .form-input {
+  transition: 
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 150ms ease;
+}
+
+.login-form .form-input:focus {
+  transform: scale(1.01);
+  box-shadow: 0 0 0 3px rgba(225, 5, 20, 0.15);
+}
+
+/* Enhanced valid state with subtle glow */
+.login-form .form-input.input--valid {
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.15);
+}
+
+.login-form .form-input.input--valid:focus {
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+  transform: scale(1.01);
+}
+
+/* Enhanced submit button hover/active states */
+.login-form .btn--primary {
+  transition: 
+    background-color 200ms ease,
+    transform 150ms ease,
+    box-shadow 200ms ease;
+}
+
+.login-form .btn--primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(225, 5, 20, 0.25);
+}
+
+.login-form .btn--primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* ---------------------------------------------------------------------------
+   LOGIN ENTRANCE ANIMATIONS
+   Staggered entrance: logo → title → subtitle → form
+   --------------------------------------------------------------------------- */
+
+/* Keyframes for login animations */
+@keyframes login-fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes login-slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes login-fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply entrance animations when motion is allowed */
+@media (prefers-reduced-motion: no-preference) {
+  /* Logo fades in first (primary attention) */
+  .login-logo {
+    animation: login-fadeIn 600ms cubic-bezier(0.0, 0.0, 0.2, 1) both;
+    animation-delay: 100ms;
+  }
+  
+  /* Title slides up second */
+  .login-title {
+    animation: login-slideUp 600ms cubic-bezier(0.0, 0.0, 0.2, 1) both;
+    animation-delay: 300ms;
+  }
+  
+  /* Subtitle slides up third */
+  .login-subtitle {
+    animation: login-slideUp 600ms cubic-bezier(0.0, 0.0, 0.2, 1) both;
+    animation-delay: 450ms;
+  }
+  
+  /* Form fades in and up last */
+  .login-form {
+    animation: login-fadeInUp 700ms cubic-bezier(0.0, 0.0, 0.2, 1) both;
+    animation-delay: 600ms;
+  }
+}
+
+/* Reduced motion fallback - instant display, no animations */
+@media (prefers-reduced-motion: reduce) {
+  .login-logo,
+  .login-title,
+  .login-subtitle,
+  .login-form {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  
+  .login-form .form-input:focus,
+  .login-form .form-input.input--valid,
+  .login-form .form-input.input--valid:focus {
+    transform: none;
+  }
+  
+  .login-form .btn--primary:hover:not(:disabled),
+  .login-form .btn--primary:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   LOGIN RESPONSIVE
+   --------------------------------------------------------------------------- */
+
+@media (min-width: 600px) {
+  .login-logo {
+    width: 180px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .login-logo {
+    width: 200px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   OTP MODAL
+   --------------------------------------------------------------------------- */
+
+.otp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  z-index: var(--z-modal);
+}
+
+.otp-modal {
+  background: var(--color-white);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 400px;
+  padding: var(--space-6);
+  position: relative;
+  box-shadow: var(--shadow-lg);
+}
+
+.otp-modal__close {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  color: var(--color-gray-500);
+  transition: background-color var(--duration-fast) var(--ease-default);
+}
+
+.otp-modal__close:hover {
+  background: var(--color-gray-100);
+}
+
+.otp-modal__close:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.otp-modal__header {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.otp-modal__icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-light);
+  border-radius: var(--radius-full);
+  color: var(--color-primary);
+  font-size: var(--text-2xl);
+}
+
+.otp-modal__icon--success {
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--color-success);
+}
+
+.otp-success-icon {
+  animation: checkmark-pop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes checkmark-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.otp-modal__title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.otp-modal__subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.otp-modal__phone {
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+  margin-top: var(--space-2);
+  letter-spacing: 1px;
+}

@@ -1,0 +1,33 @@
+/* ============================================================================
+   BASE TYPOGRAPHY & BODY STYLES
+   ============================================================================
+   RTL-first Hebrew typography for PassportCard Refer
+   ========================================================================== */
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--text-base);
+  font-weight: var(--font-regular);
+  color: var(--color-gray-900);
+  background-color: var(--color-gray-50);
+  direction: rtl;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: var(--font-semibold);
+  line-height: 1.25;
+}
+
+h1 { font-size: var(--text-3xl); }
+h2 { font-size: var(--text-2xl); }
+h3 { font-size: var(--text-xl); }
+h4 { font-size: var(--text-lg); }
+
+p {
+  line-height: 1.6;
+}

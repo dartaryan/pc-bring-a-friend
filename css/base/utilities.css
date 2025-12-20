@@ -1,0 +1,148 @@
+/* ============================================================================
+   RTL-AWARE UTILITIES
+   ============================================================================
+   Logical property utilities for RTL support
+   ========================================================================== */
+
+.text-start { text-align: start; }
+.text-end { text-align: end; }
+.text-center { text-align: center; }
+
+.ms-auto { margin-inline-start: auto; }
+.me-auto { margin-inline-end: auto; }
+
+.ps-1 { padding-inline-start: var(--space-1); }
+.pe-1 { padding-inline-end: var(--space-1); }
+.ps-2 { padding-inline-start: var(--space-2); }
+.pe-2 { padding-inline-end: var(--space-2); }
+.ps-4 { padding-inline-start: var(--space-4); }
+.pe-4 { padding-inline-end: var(--space-4); }
+
+/* ============================================================================
+   ICON UTILITIES - Story 7.8
+   ============================================================================
+   Consistent icon styling using Tabler Icons
+   ========================================================================== */
+
+/* Base icon alignment - aligns icons with text baseline */
+.ti {
+  vertical-align: -0.125em;
+  font-style: normal;
+  color: inherit;
+}
+
+/* Icon sizes */
+.icon--sm { font-size: 0.875rem; }
+.icon--md { font-size: 1rem; }
+.icon--lg { font-size: 1.25rem; }
+.icon--xl { font-size: 1.5rem; }
+
+/* Ensure icons in section headers are properly sized */
+.how-to-earn__icon .ti,
+.how-to-earn__section-icon .ti,
+.campaigns-section__icon .ti {
+  font-size: 1.25rem;
+}
+
+/* Ensure CSS celebration icons are colored */
+.css-celebration__particle .ti {
+  color: var(--color-primary);
+  font-size: 1.5rem;
+}
+
+/* ============================================================================
+   APP CONTAINERS
+   ========================================================================== */
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#toast-container {
+  position: fixed;
+  top: var(--space-4);
+  left: var(--space-4);
+  right: var(--space-4);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+
+#toast-container > * {
+  pointer-events: auto;
+}
+
+#modal-container {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: none;
+}
+
+#modal-container.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================================
+   REDUCED MOTION SUPPORT
+   ============================================================================
+   Respects user preference for reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================================
+   ACCESSIBILITY UTILITIES
+   ========================================================================== */
+
+/* Visually hidden but accessible to screen readers */
+.visually-hidden,
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus visible for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--radius-md);
+  z-index: calc(var(--z-toast) + 1);
+  transition: top var(--duration-fast) var(--ease-default);
+}
+
+.skip-link:focus {
+  top: var(--space-4);
+}

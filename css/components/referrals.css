@@ -1,0 +1,719 @@
+/* ============================================================================
+   PassportCard Refer - Referrals Page Styles
+   ============================================================================
+   Extracted from style.css - Phase 13
+   Contains referrals page, tabs, cards, pipeline, and empty states
+   ========================================================================== */
+
+/* =========================================================================
+   REFERRALS PAGE LAYOUT
+   ========================================================================= */
+
+.referrals-page {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+}
+
+.referrals-header {
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.referrals-header__title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* =========================================================================
+   TAB FILTERS
+   ========================================================================= */
+
+.referral-tabs {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.referral-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.referral-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.referral-tab:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.referral-tab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.referral-tab--active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.referral-tab--active:hover {
+  background: var(--color-primary-hover);
+  color: white;
+}
+
+.referral-tab--success.referral-tab--active {
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.referral-tab--muted.referral-tab--active {
+  background: var(--text-muted);
+  border-color: var(--text-muted);
+}
+
+.referral-tab__label {
+  display: inline;
+}
+
+.referral-tab__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--space-1);
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.referral-tab--active .referral-tab__count {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* =========================================================================
+   REFERRAL LIST
+   ========================================================================= */
+
+.referral-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  flex: 1;
+}
+
+/* =========================================================================
+   REFERRAL CARD
+   ========================================================================= */
+
+.referral-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.referral-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.referral-card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.referral-card--rejected {
+  opacity: 0.7;
+}
+
+.referral-card--hired {
+  border-inline-start: 3px solid var(--color-success);
+}
+
+.referral-card--skeleton {
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Avatar */
+.referral-card__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--avatar-color, var(--color-primary));
+  color: white;
+  border-radius: var(--radius-full);
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  flex-shrink: 0;
+}
+
+/* Content */
+.referral-card__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.referral-card__candidate-name {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.referral-card__position {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.referral-card__date {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.referral-card__date .ti {
+  font-size: 0.875rem;
+}
+
+/* Status */
+.referral-card__status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+/* Chevron */
+.referral-card__chevron {
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* =========================================================================
+   REFERRAL BADGE
+   ========================================================================= */
+
+.referral-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  background: color-mix(in srgb, var(--badge-color) 15%, transparent);
+  color: var(--badge-color);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  white-space: nowrap;
+}
+
+.referral-badge--hired {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--color-success);
+}
+
+.referral-badge--rejected {
+  background: rgba(149, 165, 166, 0.15);
+  color: var(--text-muted);
+}
+
+/* =========================================================================
+   MINI PIPELINE
+   ========================================================================= */
+
+.referral-pipeline-mini {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.referral-pipeline-mini__stage {
+  width: 8px;
+  height: 8px;
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+  transition: background 0.2s ease;
+}
+
+.referral-pipeline-mini__stage--complete {
+  background: var(--color-success);
+}
+
+.referral-pipeline-mini__stage--current {
+  background: var(--color-primary);
+  animation: referral-pulse 2s infinite;
+}
+
+.referral-pipeline-mini__stage--rejected {
+  background: var(--color-border);
+}
+
+@keyframes referral-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* =========================================================================
+   STATUS PIPELINE - Full Component
+   ========================================================================= */
+
+.status-pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.status-pipeline__track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+/* Stage */
+.status-pipeline__stage {
+  position: relative;
+  z-index: 1;
+}
+
+.status-pipeline__circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  transition: all 0.3s ease;
+}
+
+/* Completed */
+.status-pipeline__stage--completed .status-pipeline__circle {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: white;
+}
+
+/* Current */
+.status-pipeline__stage--current .status-pipeline__circle {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(225, 5, 20, 0.2);
+  animation: pipeline-pulse 2s ease-in-out infinite;
+}
+
+/* Pending */
+.status-pipeline__stage--pending .status-pipeline__circle {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--text-muted);
+}
+
+/* Rejected */
+.status-pipeline__stage--rejected .status-pipeline__circle {
+  background: var(--color-error);
+  border-color: var(--color-error);
+  color: white;
+}
+
+/* Connector */
+.status-pipeline__connector {
+  flex: 1;
+  height: 2px;
+  background: var(--color-border);
+  margin: 0 -1px;
+  z-index: 0;
+}
+
+.status-pipeline__connector--completed {
+  background: var(--color-success);
+}
+
+/* Labels */
+.status-pipeline__labels {
+  display: flex;
+  justify-content: space-between;
+}
+
+.status-pipeline__label {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-align: center;
+  transition: color 0.2s ease;
+}
+
+.status-pipeline__label--active {
+  color: var(--color-primary);
+  font-weight: var(--font-semibold);
+}
+
+.status-pipeline__label--completed {
+  color: var(--color-success);
+}
+
+.status-pipeline__label--rejected {
+  color: var(--color-error);
+}
+
+/* Mini Size */
+.status-pipeline--mini {
+  width: 100%;
+  max-width: 100px;
+}
+
+.status-pipeline--mini .status-pipeline__circle {
+  width: 12px;
+  height: 12px;
+  border-width: 2px;
+}
+
+.status-pipeline--mini .status-pipeline__circle .ti {
+  font-size: 0.5rem;
+}
+
+.status-pipeline--mini .status-pipeline__connector {
+  height: 2px;
+}
+
+.status-pipeline--mini .status-pipeline__labels {
+  display: none;
+}
+
+/* Full Size */
+.status-pipeline--full {
+  width: 100%;
+  padding: var(--space-4) 0;
+}
+
+.status-pipeline--full .status-pipeline__track {
+  padding: 0 var(--space-2);
+}
+
+.status-pipeline--full .status-pipeline__circle {
+  width: 36px;
+  height: 36px;
+  border-width: 3px;
+}
+
+.status-pipeline--full .status-pipeline__circle .ti {
+  font-size: 1rem;
+}
+
+.status-pipeline--full .status-pipeline__connector {
+  height: 3px;
+}
+
+.status-pipeline--full .status-pipeline__labels {
+  padding: var(--space-2) var(--space-2) 0;
+}
+
+.status-pipeline--full .status-pipeline__label {
+  font-size: var(--text-sm);
+  min-width: 36px;
+}
+
+/* Rejected State */
+.status-pipeline--rejected .status-pipeline__connector {
+  background: var(--color-border);
+}
+
+.status-pipeline--rejected .status-pipeline__stage--completed + .status-pipeline__connector {
+  background: var(--color-success);
+}
+
+@keyframes pipeline-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 4px rgba(225, 5, 20, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(225, 5, 20, 0.1);
+  }
+}
+
+/* =========================================================================
+   EMPTY STATE
+   ========================================================================= */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  min-height: 300px;
+}
+
+.empty-state__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: rgba(225, 5, 20, 0.1);
+  color: var(--color-primary);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-4);
+}
+
+.empty-state__icon .ti {
+  font-size: 2.5rem;
+}
+
+.empty-state__icon--small {
+  width: 60px;
+  height: 60px;
+}
+
+.empty-state__icon--small .ti {
+  font-size: 1.75rem;
+}
+
+.empty-state__title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-2);
+}
+
+.empty-state__description {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-4);
+  max-width: 300px;
+}
+
+.empty-state--filter {
+  min-height: 200px;
+  padding: var(--space-6) var(--space-4);
+}
+
+.empty-state--filter .empty-state__icon {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-muted);
+}
+
+/* =========================================================================
+   SKELETON LOADING
+   ========================================================================= */
+
+.skeleton--avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+}
+
+.skeleton--text {
+  height: 16px;
+  width: 100%;
+  margin-bottom: var(--space-2);
+}
+
+.skeleton--text-sm {
+  height: 12px;
+  width: 60%;
+  margin-bottom: var(--space-1);
+}
+
+.skeleton--badge {
+  height: 24px;
+  width: 80px;
+  border-radius: var(--radius-full);
+}
+
+.skeleton--tab {
+  width: 80px;
+  height: 40px;
+}
+
+/* =========================================================================
+   RESPONSIVE - Tablet
+   ========================================================================= */
+
+@media (min-width: 600px) {
+  .referral-list {
+    padding: var(--space-6);
+    gap: var(--space-4);
+  }
+  
+  .referral-card {
+    padding: var(--space-5);
+  }
+  
+  .referral-card__avatar {
+    width: 56px;
+    height: 56px;
+    font-size: var(--text-xl);
+  }
+  
+  .skeleton--avatar {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .status-pipeline--mini {
+    max-width: 120px;
+  }
+  
+  .status-pipeline--mini .status-pipeline__circle {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .status-pipeline--full .status-pipeline__circle {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .status-pipeline--full .status-pipeline__circle .ti {
+    font-size: 1.125rem;
+  }
+}
+
+/* =========================================================================
+   RESPONSIVE - Desktop
+   ========================================================================= */
+
+@media (min-width: 1024px) {
+  .referrals-page {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .referral-tabs {
+    justify-content: center;
+  }
+  
+  .referral-card {
+    gap: var(--space-4);
+  }
+  
+  .referral-card__content {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  
+  .referral-card__candidate-name {
+    margin: 0;
+  }
+  
+  .referral-card__position,
+  .referral-card__date {
+    margin: 0;
+    white-space: nowrap;
+  }
+  
+  .status-pipeline--mini {
+    max-width: 140px;
+  }
+  
+  .status-pipeline--mini .status-pipeline__circle {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .status-pipeline--full .status-pipeline__circle {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .status-pipeline--full .status-pipeline__circle .ti {
+    font-size: 1.25rem;
+  }
+  
+  .status-pipeline--full .status-pipeline__label {
+    min-width: 48px;
+  }
+}
+
+/* =========================================================================
+   RTL ADJUSTMENTS
+   ========================================================================= */
+
+[dir="rtl"] .status-pipeline__track {
+  flex-direction: row;
+}
+
+[dir="rtl"] .status-pipeline__connector {
+  margin-inline: -1px;
+}
+
+/* =========================================================================
+   REDUCED MOTION
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .referral-card {
+    transition: none;
+  }
+  
+  .referral-tab {
+    transition: none;
+  }
+  
+  .referral-pipeline-mini__stage--current {
+    animation: none;
+  }
+  
+  .status-pipeline__stage--current .status-pipeline__circle {
+    animation: none;
+    box-shadow: 0 0 0 4px rgba(225, 5, 20, 0.2);
+  }
+  
+  .status-pipeline__circle,
+  .status-pipeline__label {
+    transition: none;
+  }
+}

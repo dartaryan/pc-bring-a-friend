@@ -1,0 +1,150 @@
+/* ============================================================================
+   APP CONTAINERS & LAYOUT
+   ============================================================================
+   Main application layout structure
+   ========================================================================== */
+
+/* App root container */
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Toast notification container */
+#toast-container {
+  position: fixed;
+  top: var(--space-4);
+  left: var(--space-4);
+  right: var(--space-4);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+
+#toast-container > * {
+  pointer-events: auto;
+}
+
+/* Modal container */
+#modal-container {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: none;
+}
+
+#modal-container.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================================
+   APP LAYOUT ADJUSTMENTS
+   ========================================================================== */
+
+/* Body layout helpers */
+body.has-nav {
+  padding-bottom: 60px; /* Space for bottom nav */
+}
+
+body.has-sidebar {
+  /* RTL: margin on right for sidebar (inline-start = right in RTL) */
+  margin-inline-start: 240px;
+}
+
+/* Mobile - no sidebar margin */
+@media (max-width: 1023px) {
+  body.has-sidebar {
+    margin-inline-start: 0;
+  }
+}
+
+/* Desktop - no bottom nav padding */
+@media (min-width: 1024px) {
+  body.has-nav {
+    padding-bottom: 0;
+  }
+}
+
+/* Main content area */
+#main-content {
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* App Layout - Main wrapper for page content */
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Page Content - Inner content wrapper */
+.page-content {
+  flex: 1;
+  width: 100%;
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+  .page-content {
+    padding: var(--space-6);
+  }
+}
+
+/* Header container */
+#header-container {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+}
+
+/* Navigation container */
+#nav-container {
+  position: fixed;
+  z-index: var(--z-nav);
+}
+
+/* Page container (inner wrapper) */
+.page-container {
+  width: 100%;
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+/* Full-width page (no max-width constraint) */
+.page-container--full {
+  max-width: none;
+}
+
+/* Centered content */
+.page-container--centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 60px);
+}
+
+/* Desktop layout adjustments */
+@media (min-width: 1024px) {
+  .page-container {
+    padding: var(--space-6);
+  }
+}
+
+/* Safe area insets for notched devices */
+@supports (padding: env(safe-area-inset-bottom)) {
+  body.has-nav {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+}
