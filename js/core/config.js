@@ -14,9 +14,9 @@ export const CONFIG = {
   // PassportCard logo assets (Story 7.2)
   LOGOS: {
     // Standard logo for light backgrounds
-    STANDARD: 'https://www.passportcard.co.il/wp-content/uploads/2023/07/logo.svg',
-    // White logo for dark/red backgrounds
-    WHITE: 'https://www.passportcard.co.il/wp-content/uploads/2023/07/logo-m.svg'
+    STANDARD: 'assets/passportcard-logo.svg',
+    // White logo for dark/red backgrounds (header)
+    WHITE: 'assets/passportcard-logo-white.svg'
   },
   
   // Application routes with page mapping for multi-page architecture
@@ -60,7 +60,7 @@ export const CONFIG = {
   STORAGE_KEY: 'passportcard_refer_state',
   
   // Keys to persist in LocalStorage
-  PERSIST_KEYS: ['isAuthenticated', 'currentUser', 'referrals', 'stamps', 'sessionToken', 'activities']
+  PERSIST_KEYS: ['isAuthenticated', 'currentUser', 'referrals', 'stamps', 'sessionToken', 'activities', 'sidebarCollapsed']
 };
 
 /* ============================================================================

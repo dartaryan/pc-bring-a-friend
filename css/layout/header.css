@@ -16,6 +16,15 @@
 }
 
 /* ---------------------------------------------------------------------------
+   Header Start (Logo + Toggle)
+   --------------------------------------------------------------------------- */
+
+.header__start {
+  display: flex;
+  align-items: center;
+}
+
+/* ---------------------------------------------------------------------------
    Logo
    --------------------------------------------------------------------------- */
 
@@ -40,7 +49,7 @@
 }
 
 .header__logo-img {
-  height: 28px;
+  height: 40px;
   width: auto;
   display: block;
 }
@@ -183,6 +192,14 @@
   background: rgba(239, 68, 68, 0.1);
 }
 
+/* Mobile-only items in dropdown (hide on desktop since we have the toggle button) */
+@media (min-width: 1024px) {
+  .header__dropdown-item--mobile-only,
+  .header__dropdown-divider--mobile-only {
+    display: none;
+  }
+}
+
 /* ---------------------------------------------------------------------------
    Responsive Adjustments
    --------------------------------------------------------------------------- */
@@ -197,7 +214,7 @@
 /* Mobile: smaller logo and title */
 @media (max-width: 599px) {
   .header__logo-img {
-    height: 22px;
+    height: 32px;
   }
   
   .header__title {
@@ -212,7 +229,46 @@
   }
 
   .header__logo-img {
-    height: 20px;
+    height: 28px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Sidebar Toggle Button (Desktop)
+   --------------------------------------------------------------------------- */
+
+.header__sidebar-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-default);
+  margin-inline-end: var(--space-3);
+}
+
+.header__sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.header__sidebar-toggle:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: 2px;
+}
+
+.header__sidebar-toggle i {
+  font-size: 20px;
+}
+
+/* Show sidebar toggle on desktop */
+@media (min-width: 1024px) {
+  .header__sidebar-toggle {
+    display: flex;
   }
 }
 

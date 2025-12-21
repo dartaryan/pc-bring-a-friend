@@ -42,13 +42,24 @@ export class HeaderComponent extends Component {
   template() {
     const user = stateManager.getState('currentUser');
     const currentView = stateManager.getState('currentView');
+    const sidebarCollapsed = stateManager.getState('sidebarCollapsed') || false;
     
     if (!user) return '';
     
     return `
       <header class="header">
-        <div class="header__logo" data-navigate="dashboard" role="button" tabindex="0" aria-label="PassportCard - חזור לדשבורד">
-          <img src="${CONFIG.LOGOS.WHITE}" alt="" aria-hidden="true" class="header__logo-img" />
+        <div class="header__start">
+          <button 
+            class="header__sidebar-toggle" 
+            data-action="toggle-sidebar"
+            aria-label="${sidebarCollapsed ? 'פתח תפריט' : 'סגור תפריט'}"
+            aria-expanded="${!sidebarCollapsed}"
+          >
+            <i class="ti ${sidebarCollapsed ? 'ti-menu-2' : 'ti-layout-sidebar-right'}"></i>
+          </button>
+          <div class="header__logo" data-navigate="dashboard" role="button" tabindex="0" aria-label="PassportCard - חזור לדשבורד">
+            <img src="${CONFIG.LOGOS.WHITE}" alt="" aria-hidden="true" class="header__logo-img" />
+          </div>
         </div>
         
         <h1 class="header__title">${this._pageTitles[currentView] || ''}</h1>
@@ -77,6 +88,8 @@ export class HeaderComponent extends Component {
    * @returns {string} HTML string for dropdown
    */
   _renderDropdown(user) {
+    const sidebarCollapsed = stateManager.getState('sidebarCollapsed') || false;
+    
     return `
       <div class="header__dropdown" role="menu">
         <div class="header__dropdown-info">
@@ -84,6 +97,15 @@ export class HeaderComponent extends Component {
           <span class="header__dropdown-email" dir="ltr">${user.email}</span>
         </div>
         <hr class="header__dropdown-divider">
+        <button 
+          class="header__dropdown-item header__dropdown-item--mobile-only" 
+          data-action="toggle-sidebar"
+          role="menuitem"
+        >
+          <i class="ti ${sidebarCollapsed ? 'ti-menu-2' : 'ti-layout-sidebar-right'}"></i>
+          ${sidebarCollapsed ? 'פתח תפריט' : 'סגור תפריט'}
+        </button>
+        <hr class="header__dropdown-divider header__dropdown-divider--mobile-only">
         <button 
           class="header__dropdown-item header__dropdown-item--danger" 
           data-action="logout"
@@ -158,6 +180,79 @@ export class HeaderComponent extends Component {
   toggleMenu() {
     this._menuOpen = !this._menuOpen;
     this._updateDropdown();
+  }
+  
+  /**
+   * Toggles the sidebar visibility
+   */
+  toggleSidebar() {
+    const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+    const sidebar = document.querySelector('.sidebar-nav');
+    
+    if (isDesktop) {
+      // Desktop: collapse/expand sidebar
+      const currentState = stateManager.getState('sidebarCollapsed') || false;
+      const newState = !currentState;
+      
+      stateManager.setState({ sidebarCollapsed: newState });
+      
+      if (sidebar) {
+        sidebar.classList.toggle('sidebar-nav--collapsed', newState);
+      }
+      
+      // Update body class for margin adjustment
+      document.body.classList.toggle('sidebar-collapsed', newState);
+      
+      // Update toggle button icon
+      const toggleBtn = document.querySelector('.header__sidebar-toggle');
+      if (toggleBtn) {
+        const icon = toggleBtn.querySelector('i');
+        if (icon) {
+          icon.className = newState ? 'ti ti-menu-2' : 'ti ti-layout-sidebar-right';
+        }
+        toggleBtn.setAttribute('aria-label', newState ? 'פתח תפריט' : 'סגור תפריט');
+        toggleBtn.setAttribute('aria-expanded', (!newState).toString());
+      }
+    } else {
+      // Mobile: slide-out drawer
+      const isOpen = sidebar?.classList.contains('sidebar-nav--mobile-open');
+      
+      if (sidebar) {
+        sidebar.classList.toggle('sidebar-nav--mobile-open', !isOpen);
+      }
+      
+      // Handle overlay
+      let overlay = document.querySelector('.sidebar-overlay');
+      if (!isOpen) {
+        // Opening - create overlay if needed
+        if (!overlay) {
+          overlay = document.createElement('div');
+          overlay.className = 'sidebar-overlay';
+          // Add click handler directly to overlay
+          overlay.addEventListener('click', () => this.toggleSidebar());
+          document.body.appendChild(overlay);
+        }
+        // Trigger animation
+        requestAnimationFrame(() => {
+          overlay.classList.add('sidebar-overlay--visible');
+        });
+      } else {
+        // Closing - hide overlay
+        if (overlay) {
+          overlay.classList.remove('sidebar-overlay--visible');
+          // Remove after transition
+          setTimeout(() => {
+            overlay.remove();
+          }, 300);
+        }
+      }
+    }
+    
+    // Close dropdown if open
+    if (this._menuOpen) {
+      this._menuOpen = false;
+      this._updateDropdown();
+    }
   }
   
   /**

@@ -3,6 +3,8 @@
  * Orchestrates navigation components based on auth state and viewport
  */
 
+import { router } from '../core/router.js';
+
 /* ============================================================================
    NAVIGATION MANAGER
    ============================================================================
@@ -82,7 +84,14 @@ export class NavigationManager {
       this._unmountComponents();
       if (headerContainer) headerContainer.innerHTML = '';
       if (navContainer) navContainer.innerHTML = '';
-      document.body.classList.remove('has-nav', 'has-sidebar');
+      
+      // Remove sidebar container
+      const sidebarContainer = document.getElementById('sidebar-container');
+      if (sidebarContainer) {
+        sidebarContainer.remove();
+      }
+      
+      document.body.classList.remove('has-nav', 'has-sidebar', 'sidebar-collapsed', 'has-header');
     }
   }
   
@@ -110,23 +119,70 @@ export class NavigationManager {
       headerContainer.innerHTML = this._headerComponent.render();
       this._headerComponent.setElement(headerContainer.firstElementChild);
       this._headerComponent.mount();
+      // Add has-header class for fixed header padding
+      document.body.classList.add('has-header');
+    }
+    
+    // Always render sidebar (for both desktop and mobile drawer)
+    this._sidebarNavComponent = new this._SidebarNavComponent();
+    if (this._stateManager) {
+      this._sidebarNavComponent.setStateManager(this._stateManager);
+    }
+    
+    // Create a container for sidebar that's separate from nav container
+    let sidebarContainer = document.getElementById('sidebar-container');
+    if (!sidebarContainer) {
+      sidebarContainer = document.createElement('div');
+      sidebarContainer.id = 'sidebar-container';
+      document.body.appendChild(sidebarContainer);
+      
+      // Add click handler for navigation items in sidebar
+      sidebarContainer.addEventListener('click', (event) => {
+        const target = event.target.closest('[data-navigate]');
+        if (target) {
+          event.preventDefault();
+          const route = target.dataset.navigate;
+          
+          // Close mobile drawer if open
+          const sidebar = sidebarContainer.querySelector('.sidebar-nav');
+          if (sidebar?.classList.contains('sidebar-nav--mobile-open')) {
+            sidebar.classList.remove('sidebar-nav--mobile-open');
+            const overlay = document.querySelector('.sidebar-overlay');
+            if (overlay) {
+              overlay.classList.remove('sidebar-overlay--visible');
+              setTimeout(() => overlay.remove(), 300);
+            }
+          }
+          
+          // Navigate using router
+          router.navigate(route);
+        }
+      });
+    }
+    sidebarContainer.innerHTML = this._sidebarNavComponent.render();
+    this._sidebarNavComponent.setElement(sidebarContainer.firstElementChild);
+    this._sidebarNavComponent.mount();
+    
+    // Apply collapsed state if saved (desktop only)
+    if (this._isDesktop) {
+      const sidebarCollapsed = this._stateManager?.getState('sidebarCollapsed') || false;
+      if (sidebarCollapsed) {
+        const sidebar = sidebarContainer.querySelector('.sidebar-nav');
+        if (sidebar) {
+          sidebar.classList.add('sidebar-nav--collapsed');
+        }
+        document.body.classList.add('sidebar-collapsed');
+      }
     }
     
     // Render appropriate nav based on viewport
     if (this._isDesktop) {
       document.body.classList.add('has-sidebar');
       document.body.classList.remove('has-nav');
-      
-      this._sidebarNavComponent = new this._SidebarNavComponent();
-      if (this._stateManager) {
-        this._sidebarNavComponent.setStateManager(this._stateManager);
-      }
       this._bottomNavComponent = null;
       
       if (navContainer) {
-        navContainer.innerHTML = this._sidebarNavComponent.render();
-        this._sidebarNavComponent.setElement(navContainer.firstElementChild);
-        this._sidebarNavComponent.mount();
+        navContainer.innerHTML = '';
       }
     } else {
       document.body.classList.add('has-nav');
@@ -136,7 +192,6 @@ export class NavigationManager {
       if (this._stateManager) {
         this._bottomNavComponent.setStateManager(this._stateManager);
       }
-      this._sidebarNavComponent = null;
       
       if (navContainer) {
         navContainer.innerHTML = this._bottomNavComponent.render();
@@ -161,6 +216,18 @@ export class NavigationManager {
     if (this._sidebarNavComponent) {
       this._sidebarNavComponent.unmount();
       this._sidebarNavComponent = null;
+    }
+    
+    // Clean up sidebar container
+    const sidebarContainer = document.getElementById('sidebar-container');
+    if (sidebarContainer) {
+      sidebarContainer.innerHTML = '';
+    }
+    
+    // Clean up overlay
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (overlay) {
+      overlay.remove();
     }
   }
   

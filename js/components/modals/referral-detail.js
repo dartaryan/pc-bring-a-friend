@@ -51,7 +51,7 @@ export class ReferralDetailModal extends Component {
            aria-modal="true"
            aria-labelledby="referral-modal-title">
         
-        <div class="referral-detail-modal" onclick="event.stopPropagation()">
+        <div class="referral-detail-modal">
           <!-- Drag Handle (Mobile) -->
           <div class="modal__drag-handle" aria-hidden="true">
             <span class="modal__drag-bar"></span>

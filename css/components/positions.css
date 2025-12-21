@@ -12,8 +12,8 @@
 .positions-page {
   padding: var(--space-4);
   padding-bottom: calc(var(--space-4) + 80px);
-  max-width: 1200px;
-  margin: 0 auto;
+  /* Full width - content containers handle max-width */
+  max-width: none;
 }
 
 /* Header */
@@ -499,11 +499,18 @@
 
 @media (min-width: 1024px) {
   .positions-page {
+    width: 100%;
+    max-width: none;
     padding: var(--space-6);
     padding-bottom: var(--space-6);
   }
   
+  .positions-header {
+    width: 100%;
+  }
+  
   .filter-bar {
+    width: 100%;
     flex-wrap: nowrap;
   }
   
@@ -516,7 +523,12 @@
     flex: 1;
   }
   
+  .positions-results-count {
+    width: 100%;
+  }
+  
   .positions-list {
+    width: 100%;
     grid-template-columns: repeat(3, 1fr);
   }
 }

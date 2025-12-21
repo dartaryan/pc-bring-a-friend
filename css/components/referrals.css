@@ -626,12 +626,26 @@
 
 @media (min-width: 1024px) {
   .referrals-page {
-    max-width: 800px;
-    margin: 0 auto;
+    /* Full width on desktop */
+    width: 100%;
+    max-width: none;
+    padding: var(--space-6);
+  }
+  
+  .referrals-header {
+    width: 100%;
+    padding: var(--space-4) var(--space-6);
   }
   
   .referral-tabs {
+    width: 100%;
     justify-content: center;
+    padding: var(--space-3) var(--space-6);
+  }
+  
+  .referral-list {
+    width: 100%;
+    padding: var(--space-6);
   }
   
   .referral-card {

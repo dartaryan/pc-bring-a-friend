@@ -65,58 +65,67 @@ export class LoginComponent extends Component {
 
     return `
       <div class="login-screen">
-        <div class="login-hero">
-          <div class="login-logo" role="img" aria-label="PassportCard">
-            <img src="${CONFIG.LOGOS.WHITE}" alt="" aria-hidden="true" class="login-logo__img" />
-          </div>
-          <h1 class="login-title">ברוכים הבאים ל-PassportCard Refer</h1>
-          <p class="login-subtitle">מערכת ההפניות שלך</p>
-        </div>
-        
-        <form class="login-form" data-action="submit-login">
-          <div class="form-group">
-            <label for="email-input" class="form-label">אימייל חברה</label>
-            <div class="email-input-wrapper">
-              <input 
-                type="text" 
-                id="email-input"
-                class="${inputClasses}"
-                placeholder="firstname.lastname@passportcard.co.il"
-                aria-label="הזינו את כתובת האימייל שלכם"
-                aria-describedby="email-error email-suggestion-hint"
-                aria-invalid="${errorMessage ? 'true' : 'false'}"
-                autocomplete="email"
-                autocapitalize="off"
-                autocorrect="off"
-                spellcheck="false"
-                value="${email}"
-                ${inputDisabled}
-              >
-              <div 
-                class="email-suggestion ${showSuggestion && email && !email.includes('@') ? 'email-suggestion--visible' : ''}" 
-                id="email-suggestion-hint"
-                role="button"
-                tabindex="${showSuggestion && email && !email.includes('@') ? '0' : '-1'}"
-                aria-label="לחץ להשלמת האימייל"
-              >
-                <span class="email-suggestion__hint">לחץ Tab להשלמה:</span>
-                <span class="email-suggestion__text">${email}@passportcard.co.il</span>
-              </div>
+        <div class="login-card">
+          <div class="login-hero">
+            <div class="login-logo" role="img" aria-label="PassportCard">
+              <img src="${CONFIG.LOGOS.STANDARD}" alt="" aria-hidden="true" class="login-logo__img" />
             </div>
-            <div id="email-error" class="form-error" aria-live="polite" role="alert">
-              ${errorMessage}
-            </div>
+            <h1 class="login-title">ברוכים הבאים</h1>
+            <p class="login-subtitle">מערכת ההפניות של PassportCard</p>
           </div>
           
-          <button 
-            type="submit" 
-            class="${buttonClasses}"
-            ${buttonDisabled}
-            aria-busy="${isSubmitting}"
-          >
-            ${isSubmitting ? '<span class="spinner" aria-hidden="true"></span> שולח...' : 'שלח קוד אימות'}
-          </button>
-        </form>
+          <form class="login-form" data-action="submit-login">
+            <div class="form-group">
+              <label for="email-input" class="form-label">אימייל חברה</label>
+              <div class="email-input-wrapper">
+                <input 
+                  type="text" 
+                  id="email-input"
+                  class="${inputClasses}"
+                  placeholder="firstname.lastname@passportcard.co.il"
+                  aria-label="הזינו את כתובת האימייל שלכם"
+                  aria-describedby="email-error email-suggestion-hint"
+                  aria-invalid="${errorMessage ? 'true' : 'false'}"
+                  autocomplete="email"
+                  autocapitalize="off"
+                  autocorrect="off"
+                  spellcheck="false"
+                  value="${email}"
+                  ${inputDisabled}
+                >
+                <div 
+                  class="email-suggestion ${showSuggestion && email && !email.includes('@') ? 'email-suggestion--visible' : ''}" 
+                  id="email-suggestion-hint"
+                  role="button"
+                  tabindex="${showSuggestion && email && !email.includes('@') ? '0' : '-1'}"
+                  aria-label="לחץ להשלמת האימייל"
+                >
+                  <span class="email-suggestion__hint">לחץ Tab להשלמה:</span>
+                  <span class="email-suggestion__text">${email}@passportcard.co.il</span>
+                </div>
+              </div>
+              <div id="email-error" class="form-error" aria-live="polite" role="alert">
+                ${errorMessage}
+              </div>
+            </div>
+            
+            <button 
+              type="submit" 
+              class="${buttonClasses}"
+              ${buttonDisabled}
+              aria-busy="${isSubmitting}"
+            >
+              ${isSubmitting ? '<span class="spinner" aria-hidden="true"></span> שולח...' : '<i class="ti ti-send" style="margin-left: 8px;"></i> שלח קוד אימות'}
+            </button>
+          </form>
+          
+          <div class="login-footer">
+            <p class="login-footer__text">
+              <i class="ti ti-shield-check" style="color: var(--color-success); margin-left: 4px;"></i>
+              התחברות מאובטחת למערכת <strong>PassportCard</strong>
+            </p>
+          </div>
+        </div>
       </div>
     `;
   }

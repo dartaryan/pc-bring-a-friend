@@ -153,7 +153,6 @@ export class PassportComponent extends Component {
           <div class="passport-pages" 
                data-current-page="${currentPage}"
                aria-live="polite">
-            ${isOpen ? this._renderPagesHeader() : ''}
             ${this._renderAllPages(user, stamps)}
           </div>
           
@@ -183,54 +182,30 @@ export class PassportComponent extends Component {
         
         ${this._renderPassportSummary(stamps, points)}
         ${this._renderNavigationArrows()}
-        ${totalPages > 1 ? this._renderPageIndicator() : ''}
       </section>
     `;
   }
   
   /**
-   * Renders the pages header with close button (Story 7.6)
-   * @returns {string} HTML string
+   * Renders the pages header (X button removed per bug #5)
+   * @returns {string} Empty string - close button removed
    */
   _renderPagesHeader() {
-    return `
-      <div class="passport-pages__header">
-        <button class="passport-pages__close-btn"
-                data-action="close-passport"
-                aria-label="סגור את הדרכון">
-          <i class="ti ti-x" aria-hidden="true"></i>
-        </button>
-      </div>
-    `;
+    // X button removed - passport closes via main CTA button or by clicking cover
+    return '';
   }
   
   /**
-   * Renders passport summary section
-   * @param {Array} stamps - User's stamps array
-   * @param {number} points - User's points
-   * @returns {string} HTML string
+   * Renders passport summary section (stats and button removed)
+   * Open/close now handled exclusively via navigation arrows
+   * @param {Array} stamps - User's stamps array (unused, kept for API compatibility)
+   * @param {number} points - User's points (unused, kept for API compatibility)
+   * @returns {string} Empty string - no summary section needed
    */
   _renderPassportSummary(stamps, points) {
-    const isOpen = this.passportState.isOpen;
-    
-    return `
-      <div class="passport-summary">
-        <p class="passport-summary__stats">
-          <span class="passport-summary__stamps">${stamps.length} חותמות</span>
-          <span class="passport-summary__separator">|</span>
-          <span class="passport-summary__points">${points.toLocaleString('he-IL')} נקודות</span>
-        </p>
-        
-        <button 
-          class="btn btn--primary passport-summary__cta"
-          data-action="${isOpen ? 'close-passport' : 'open-passport'}"
-          aria-label="${isOpen ? 'סגור את הדרכון שלי' : 'פתח את הדרכון שלי'}"
-        >
-          <i class="ti ti-${isOpen ? 'x' : 'book-2'}" aria-hidden="true"></i>
-          ${isOpen ? 'סגור' : 'פתח את הדרכון'}
-        </button>
-      </div>
-    `;
+    // Open/close button removed - passport opens by clicking cover,
+    // closes by pressing arrow on last/first page
+    return '';
   }
   
   /**
@@ -450,35 +425,42 @@ export class PassportComponent extends Component {
   
   /**
    * Renders navigation arrows for page navigation
+   * Arrows are always enabled when passport is open:
+   * - On first page: "prev" arrow closes the passport
+   * - On last page: "next" arrow closes the passport
    * @returns {string} HTML string
    */
   _renderNavigationArrows() {
-    const { currentPage } = this.passportState;
+    const { currentPage, isOpen } = this.passportState;
     const stamps = stateManager?.getState('stamps') || [];
     const totalPages = this._getTotalPagesForViewport(stamps);
     const isFirstPage = currentPage === 0;
     const isLastPage = currentPage >= totalPages - 1;
-    const hasMultiplePages = totalPages > 1;
+    
+    // When passport is open, arrows are always enabled (they close the passport at boundaries)
+    // When closed, arrows are disabled
+    const prevDisabled = !isOpen;
+    const nextDisabled = !isOpen;
     
     return `
       <div class="passport-nav">
-        <button class="passport-nav__btn passport-nav__btn--prev ${!hasMultiplePages || isFirstPage ? 'passport-nav__btn--disabled' : ''}"
+        <button class="passport-nav__btn passport-nav__btn--prev ${prevDisabled ? 'passport-nav__btn--disabled' : ''}"
                 data-action="passport-prev"
-                aria-label="עמוד קודם"
-                ${!hasMultiplePages || isFirstPage ? 'disabled' : ''}>
+                aria-label="${isFirstPage ? 'סגור את הדרכון' : 'עמוד קודם'}"
+                ${prevDisabled ? 'disabled' : ''}>
           <i class="ti ti-chevron-right" aria-hidden="true"></i>
-          <span class="passport-nav__text">הקודם</span>
+          <span class="passport-nav__text">${isFirstPage ? 'סגור' : 'הקודם'}</span>
         </button>
         
-        <button class="passport-nav__btn passport-nav__btn--next ${!hasMultiplePages || isLastPage ? 'passport-nav__btn--disabled' : ''}"
+        <button class="passport-nav__btn passport-nav__btn--next ${nextDisabled ? 'passport-nav__btn--disabled' : ''}"
                 data-action="passport-next"
-                aria-label="עמוד הבא"
-                ${!hasMultiplePages || isLastPage ? 'disabled' : ''}>
-          <span class="passport-nav__text">הבא</span>
+                aria-label="${isLastPage ? 'סגור את הדרכון' : 'עמוד הבא'}"
+                ${nextDisabled ? 'disabled' : ''}>
+          <span class="passport-nav__text">${isLastPage ? 'סגור' : 'הבא'}</span>
           <i class="ti ti-chevron-left" aria-hidden="true"></i>
         </button>
       </div>
-      ${hasMultiplePages ? this._renderSwipeHint() : ''}
+      ${this._renderSwipeHint()}
     `;
   }
   
@@ -495,29 +477,7 @@ export class PassportComponent extends Component {
     `;
   }
   
-  /**
-   * Renders page indicator with dots
-   * @returns {string} HTML string
-   */
-  _renderPageIndicator() {
-    const { currentPage } = this.passportState;
-    const stamps = stateManager?.getState('stamps') || [];
-    const totalPages = this._getTotalPagesForViewport(stamps);
-
-    const dots = Array.from({ length: totalPages }, (_, i) => `
-      <span class="page-indicator__dot ${i === currentPage ? 'page-indicator__dot--active' : ''}"
-            aria-label="עמוד ${i + 1}"></span>
-    `).join('');
-
-    return `
-      <div class="page-indicator" aria-label="מיקום בדרכון">
-        <span class="page-indicator__text">עמוד ${currentPage + 1} מתוך ${totalPages}</span>
-        <div class="page-indicator__dots">
-          ${dots}
-        </div>
-      </div>
-    `;
-  }
+  // Page indicator removed per bug #9 - navigation is intuitive without explicit numbers
   
   /**
    * Renders Page 1: Profile information
@@ -632,22 +592,8 @@ export class PassportComponent extends Component {
       });
     }
     
-    // Update page indicator text
-    const indicator = document.querySelector('.page-indicator__text');
-    if (indicator) {
-      indicator.textContent = `עמוד ${currentPage + 1} מתוך ${totalPages}`;
-    }
-    
-    // Update dots
-    document.querySelectorAll('.page-indicator__dot').forEach((dot, i) => {
-      dot.classList.toggle('page-indicator__dot--active', i === currentPage);
-    });
-    
     this._updateNavigationButtons();
     
-    if (this.passportState.isOpen) {
-      this._updatePageIndicator();
-    }
   }
   
   /**
@@ -684,23 +630,39 @@ export class PassportComponent extends Component {
   
   /**
    * Updates navigation button states
+   * Arrows are always enabled when passport is open (they close at boundaries)
    */
   _updateNavigationButtons() {
-    const { currentPage } = this.passportState;
+    const { currentPage, isOpen } = this.passportState;
     const stamps = stateManager?.getState('stamps') || [];
     const totalPages = this._getTotalPagesForViewport(stamps);
+    const isFirstPage = currentPage === 0;
+    const isLastPage = currentPage >= totalPages - 1;
     
     const prevBtn = document.querySelector('.passport-nav__btn--prev');
     const nextBtn = document.querySelector('.passport-nav__btn--next');
     
+    // When passport is open, buttons are always enabled
     if (prevBtn) {
-      prevBtn.disabled = currentPage === 0;
-      prevBtn.classList.toggle('passport-nav__btn--disabled', currentPage === 0);
+      prevBtn.disabled = !isOpen;
+      prevBtn.classList.toggle('passport-nav__btn--disabled', !isOpen);
+      // Update text based on position
+      const textSpan = prevBtn.querySelector('.passport-nav__text');
+      if (textSpan) {
+        textSpan.textContent = isFirstPage ? 'סגור' : 'הקודם';
+      }
+      prevBtn.setAttribute('aria-label', isFirstPage ? 'סגור את הדרכון' : 'עמוד קודם');
     }
     
     if (nextBtn) {
-      nextBtn.disabled = currentPage >= totalPages - 1;
-      nextBtn.classList.toggle('passport-nav__btn--disabled', currentPage >= totalPages - 1);
+      nextBtn.disabled = !isOpen;
+      nextBtn.classList.toggle('passport-nav__btn--disabled', !isOpen);
+      // Update text based on position
+      const textSpan = nextBtn.querySelector('.passport-nav__text');
+      if (textSpan) {
+        textSpan.textContent = isLastPage ? 'סגור' : 'הבא';
+      }
+      nextBtn.setAttribute('aria-label', isLastPage ? 'סגור את הדרכון' : 'עמוד הבא');
     }
   }
   
@@ -977,18 +939,7 @@ export class PassportComponent extends Component {
       }
     }
     
-    const cta = document.querySelector('.passport-summary__cta');
     const cover = document.querySelector('.passport-cover');
-    const pagesHeader = document.querySelector('.passport-pages__header');
-    
-    if (cta) {
-      cta.dataset.action = isOpen ? 'close-passport' : 'open-passport';
-      cta.setAttribute('aria-label', isOpen ? 'סגור את הדרכון שלי' : 'פתח את הדרכון שלי');
-      cta.innerHTML = `
-        <i class="ti ti-${isOpen ? 'x' : 'book-2'}" aria-hidden="true"></i>
-        ${isOpen ? 'סגור' : 'פתח את הדרכון'}
-      `;
-    }
     
     if (passport) {
       passport.setAttribute('aria-label', isOpen ? 'דרכון פתוח' : 'דרכון סגור');
@@ -1002,43 +953,10 @@ export class PassportComponent extends Component {
       }
     }
     
-    const pagesContainer = document.querySelector('.passport-pages');
-    if (pagesContainer) {
-      if (isOpen && !pagesHeader) {
-        pagesContainer.insertAdjacentHTML('afterbegin', this._renderPagesHeader());
-      } else if (!isOpen && pagesHeader) {
-        pagesHeader.remove();
-      }
-    }
-    
     this._updateNavigationButtons();
-    
-    if (isOpen) {
-      this._updatePageIndicator();
-    }
   }
   
-  /**
-   * Updates the page indicator display
-   */
-  _updatePageIndicator() {
-    const { currentPage } = this.passportState;
-    const stamps = stateManager?.getState('stamps') || [];
-    const totalPages = this._getTotalPagesForViewport(stamps);
-    const indicatorContainer = document.querySelector('.passport-container');
-    let indicator = document.querySelector('.page-indicator');
-
-    if (totalPages > 1) {
-      const indicatorHtml = this._renderPageIndicator();
-      if (!indicator && indicatorContainer) {
-        indicatorContainer.insertAdjacentHTML('beforeend', indicatorHtml);
-      } else if (indicator) {
-        indicator.outerHTML = indicatorHtml;
-      }
-    } else if (indicator) {
-      indicator.remove();
-    }
-  }
+  // _updatePageIndicator() removed per bug #9 - page indicator no longer displayed
   
   /**
    * Handles user data changes
@@ -1065,13 +983,11 @@ export class PassportComponent extends Component {
   
   /**
    * Handles stamps data changes
+   * Stats text under passport removed per bug #8
    * @param {Array} newStamps - Updated stamps array
    */
   _handleStampsChange(newStamps) {
-    const stampsEl = document.querySelector('.passport-summary__stamps');
-    if (stampsEl && newStamps) {
-      stampsEl.textContent = `${newStamps.length} חותמות`;
-    }
+    // Stats text removed per bug #8 - no need to update .passport-summary__stamps
     
     const stampsCountEl = document.querySelector('.stamps-page__count');
     if (stampsCountEl && newStamps) {

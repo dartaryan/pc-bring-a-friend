@@ -51,7 +51,7 @@ export class PositionDetailModal extends Component {
            aria-modal="true"
            aria-labelledby="position-modal-title">
         
-        <div class="position-detail-modal" onclick="event.stopPropagation()">
+        <div class="position-detail-modal">
           <!-- Drag Handle (Mobile) -->
           <div class="modal__drag-handle" aria-hidden="true">
             <span class="modal__drag-bar"></span>

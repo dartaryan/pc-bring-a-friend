@@ -6,6 +6,7 @@
 import { Component } from '../../core/component.js';
 import { STAMP_TYPES } from '../../data/stamp-types.js';
 import { renderIcon } from '../../core/utils.js';
+import { stateManager } from '../../core/state.js';
 
 /* ============================================================================
    STAMP DETAIL MODAL (Story 3.5)
@@ -39,7 +40,7 @@ export class StampDetailModal extends Component {
            aria-modal="true"
            aria-labelledby="stamp-modal-title"
            aria-describedby="stamp-modal-desc">
-        <div class="modal-content stamp-modal" onclick="event.stopPropagation()">
+        <div class="modal-content stamp-modal">
           <button class="modal-close"
                   data-action="close-stamp-modal"
                   aria-label="סגור">

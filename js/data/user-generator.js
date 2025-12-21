@@ -32,50 +32,447 @@ const HEBREW_LAST_NAMES = ['כהן', 'לוי', 'מזרחי', 'פרץ', 'ביטו
  * Maps common English first names to Hebrew equivalents
  */
 const ENGLISH_TO_HEBREW_NAMES = {
-  // Male names
-  'yossi': 'יוסי', 'yosi': 'יוסי', 'joseph': 'יוסף', 'joe': 'יוסי',
-  'david': 'דוד', 'dudi': 'דוד', 'dave': 'דוד',
-  'moshe': 'משה', 'moses': 'משה', 'moishe': 'משה',
-  'avi': 'אבי', 'avraham': 'אברהם', 'abraham': 'אברהם',
-  'danny': 'דני', 'dan': 'דן', 'daniel': 'דניאל',
-  'gilad': 'גלעד', 'guy': 'גיא', 'idan': 'עידן',
-  'roi': 'רועי', 'roey': 'רועי', 'noam': 'נועם',
-  'itay': 'איתי', 'etay': 'איתי', 'omer': 'עומר', 'omar': 'עומר',
-  'ron': 'רון', 'alon': 'אלון', 'tal': 'טל', 'yuval': 'יובל',
-  'ben': 'בן', 'eyal': 'אייל', 'eran': 'ערן', 'oren': 'אורן',
-  'shai': 'שי', 'shay': 'שי', 'lior': 'ליאור',
-  'michael': 'מיכאל', 'mike': 'מיכאל', 'max': 'מקס',
-  // Female names
-  'dana': 'דנה', 'miri': 'מירי', 'miriam': 'מרים',
-  'yael': 'יעל', 'shira': 'שירה', 'noa': 'נועה', 'noah': 'נועה',
-  'rachel': 'רחל', 'tamar': 'תמר', 'liat': 'ליאת',
-  'maya': 'מאיה', 'hila': 'הילה', 'michal': 'מיכל',
-  'anat': 'ענת', 'orit': 'אורית', 'sharon': 'שרון',
-  'galit': 'גלית', 'hadas': 'הדס', 'ayala': 'איילה',
-  'adi': 'עדי', 'mor': 'מור', 'orly': 'אורלי', 'nirit': 'נירית',
-  'sarah': 'שרה', 'sara': 'שרה', 'rivka': 'רבקה', 'rebecca': 'רבקה'
+  // ============================================
+  // MALE NAMES - Comprehensive List
+  // ============================================
+  // A
+  'aaron': 'אהרון', 'aharon': 'אהרון', 'adam': 'אדם', 'adi': 'עדי',
+  'adir': 'אדיר', 'adiel': 'עדיאל', 'afik': 'אפיק', 'agam': 'אגם',
+  'aharoni': 'אהרוני', 'ahron': 'אהרון', 'aitan': 'איתן', 'akiva': 'עקיבא',
+  'alan': 'אלן', 'alex': 'אלכס', 'alexander': 'אלכסנדר', 'alon': 'אלון',
+  'almog': 'אלמוג', 'amir': 'אמיר', 'amit': 'עמית', 'amitai': 'אמיתי',
+  'amnon': 'אמנון', 'amos': 'עמוס', 'andrew': 'אנדרו', 'anthony': 'אנתוני',
+  'ari': 'ארי', 'ariel': 'אריאל', 'arnon': 'ארנון', 'aron': 'אהרון',
+  'asaf': 'אסף', 'asher': 'אשר', 'asi': 'אסי', 'assaf': 'אסף',
+  'avi': 'אבי', 'aviad': 'אביעד', 'avichai': 'אביחי', 'avidan': 'אבידן',
+  'aviel': 'אביאל', 'avigdor': 'אביגדור', 'avihai': 'אביחי', 'avihu': 'אביהוא',
+  'avinatan': 'אבינתן', 'avinoam': 'אבינועם', 'aviram': 'אבירם', 'avishai': 'אבישי',
+  'avishay': 'אבישי', 'avital': 'אביטל', 'avner': 'אבנר', 'avraham': 'אברהם',
+  'avram': 'אברם', 'ayalon': 'איילון', 'azriel': 'עזריאל',
+  // B
+  'bar': 'בר', 'barak': 'ברק', 'barel': 'בראל', 'baruch': 'ברוך',
+  'batel': 'בתאל', 'ben': 'בן', 'beni': 'בני', 'benjamin': 'בנימין',
+  'benny': 'בני', 'benyamin': 'בנימין', 'boaz': 'בועז', 'brian': 'בריאן',
+  // C
+  'chai': 'חי', 'chaim': 'חיים', 'charles': 'צ\'ארלס', 'chris': 'כריס',
+  // D
+  'dan': 'דן', 'dani': 'דני', 'daniel': 'דניאל', 'danny': 'דני',
+  'dany': 'דני', 'dor': 'דור', 'doron': 'דורון', 'dov': 'דב',
+  'david': 'דוד', 'dave': 'דוד', 'dudi': 'דודי', 'dvir': 'דביר',
+  // E
+  'ed': 'אד', 'eddie': 'אדי', 'eden': 'עדן', 'ehud': 'אהוד',
+  'eitan': 'איתן', 'ethan': 'איתן', 'el': 'אל', 'elad': 'אלעד',
+  'elas': 'אלעס', 'eldad': 'אלדד', 'eli': 'אלי', 'eliav': 'אליאב',
+  'eliezer': 'אליעזר', 'elijah': 'אליהו', 'elior': 'אליאור', 'eliran': 'אלירן',
+  'elisha': 'אלישע', 'eliyahu': 'אליהו', 'elkana': 'אלקנה', 'elon': 'אילון',
+  'emanuel': 'עמנואל', 'eran': 'ערן', 'eric': 'אריק', 'erik': 'אריק',
+  'eshel': 'אשל', 'etai': 'איתי', 'etay': 'איתי', 'evan': 'אוון',
+  'eyal': 'אייל', 'eytan': 'איתן', 'ezra': 'עזרא',
+  // G
+  'gabi': 'גבי', 'gabriel': 'גבריאל', 'gad': 'גד', 'gadi': 'גדי',
+  'gal': 'גל', 'gary': 'גארי', 'gavriel': 'גבריאל', 'george': 'ג\'ורג\'',
+  'gershon': 'גרשון', 'gidon': 'גדעון', 'gideon': 'גדעון', 'gil': 'גיל',
+  'gilad': 'גלעד', 'guy': 'גיא',
+  // H
+  'hadar': 'הדר', 'haim': 'חיים', 'harel': 'הראל', 'hayim': 'חיים',
+  'henry': 'הנרי', 'hershel': 'הרשל', 'hillel': 'הלל', 'hod': 'הוד',
+  // I
+  'idan': 'עידן', 'ido': 'עידו', 'igal': 'יגאל', 'ilan': 'אילן',
+  'ilay': 'עילאי', 'immanuel': 'עמנואל', 'isaac': 'יצחק', 'israel': 'ישראל',
+  'isser': 'איסר', 'itai': 'איתי', 'itay': 'איתי', 'itamar': 'איתמר',
+  'itzik': 'איציק', 'ivan': 'איוון',
+  // J
+  'jack': 'יעקב', 'jacob': 'יעקב', 'jake': 'ג\'ייק', 'james': 'ג\'יימס',
+  'jason': 'ג\'ייסון', 'jeff': 'ג\'ף', 'jeremy': 'ג\'רמי', 'jesse': 'ג\'סי',
+  'joe': 'יוסי', 'joel': 'יואל', 'john': 'יוחנן', 'johnny': 'ג\'וני',
+  'jonah': 'יונה', 'jonathan': 'יונתן', 'jordan': 'ירדן', 'josh': 'יהושע',
+  'joshua': 'יהושע', 'judah': 'יהודה',
+  // K
+  'kobi': 'קובי', 'koby': 'קובי',
+  // L
+  'lavi': 'לביא', 'leon': 'ליאון', 'leo': 'ליאו', 'lev': 'לב',
+  'levi': 'לוי', 'liad': 'ליעד', 'liam': 'ליאם', 'lior': 'ליאור',
+  'lioz': 'ליאוז', 'liron': 'לירון', 'liran': 'לירן', 'lotan': 'לוטן',
+  'lucas': 'לוקס', 'luke': 'לוק',
+  // M
+  'magen': 'מגן', 'maor': 'מאור', 'mark': 'מרק', 'marcus': 'מרקוס',
+  'martin': 'מרטין', 'matan': 'מתן', 'mati': 'מתי', 'matt': 'מט',
+  'matthew': 'מתיו', 'max': 'מקס', 'meir': 'מאיר', 'menachem': 'מנחם',
+  'menashe': 'מנשה', 'michael': 'מיכאל', 'micha': 'מיכה', 'micky': 'מיקי',
+  'mike': 'מייק', 'miki': 'מיקי', 'moishe': 'מויש', 'mor': 'מור',
+  'mordechai': 'מרדכי', 'mordy': 'מורדי', 'moshe': 'משה', 'moses': 'משה',
+  'moti': 'מוטי', 'motty': 'מוטי',
+  // N
+  'nadav': 'נדב', 'nahum': 'נחום', 'naor': 'נאור', 'naphtali': 'נפתלי',
+  'natan': 'נתן', 'nathan': 'נתן', 'natanel': 'נתנאל', 'netanel': 'נתנאל',
+  'nave': 'נווה', 'naveh': 'נווה', 'neria': 'נריה', 'neriya': 'נריה',
+  'nevo': 'נבו', 'nick': 'ניק', 'nico': 'ניקו', 'nimrod': 'נמרוד',
+  'nir': 'ניר', 'nisan': 'ניסן', 'nitai': 'ניתאי', 'nitay': 'ניתאי',
+  'niv': 'ניב', 'noam': 'נועם', 'noah': 'נח',
+  // O
+  'oded': 'עודד', 'ofer': 'עופר', 'ofir': 'אופיר', 'ohad': 'אוהד',
+  'omer': 'עומר', 'omar': 'עומר', 'omri': 'עמרי', 'or': 'אור',
+  'oran': 'אורן', 'oren': 'אורן', 'ori': 'אורי', 'oriel': 'אוריאל',
+  'oz': 'עוז', 'ofer': 'עופר',
+  // P
+  'paul': 'פאול', 'peretz': 'פרץ', 'peter': 'פיטר', 'pinchas': 'פנחס',
+  // R
+  'rafi': 'רפי', 'rafael': 'רפאל', 'raphael': 'רפאל', 'ram': 'רם',
+  'rami': 'רמי', 'ran': 'רן', 'ravid': 'רביד', 'raviv': 'רביב',
+  'raz': 'רז', 'reuven': 'ראובן', 'reuben': 'ראובן', 'richard': 'ריצ\'ארד',
+  'robert': 'רוברט', 'roi': 'רועי', 'roey': 'רועי', 'ron': 'רון',
+  'ronan': 'רונן', 'ronen': 'רונן', 'roy': 'רועי',
+  // S
+  'sam': 'סם', 'sami': 'סמי', 'samuel': 'שמואל', 'shai': 'שי',
+  'shahar': 'שחר', 'shaul': 'שאול', 'shay': 'שי', 'shaked': 'שקד',
+  'shalom': 'שלום', 'shavit': 'שביט', 'shilo': 'שילה', 'shimon': 'שמעון',
+  'shimshon': 'שמשון', 'shlomi': 'שלומי', 'shlomo': 'שלמה', 'shmuel': 'שמואל',
+  'simon': 'שמעון', 'snir': 'סניר', 'solomon': 'שלמה', 'stav': 'סתו',
+  'steven': 'סטיבן', 'steve': 'סטיב', 'stephen': 'סטפן',
+  // T
+  'tal': 'טל', 'tali': 'טלי', 'tamir': 'תמיר', 'tomer': 'תומר',
+  'tom': 'תום', 'tommy': 'תומי', 'tsvi': 'צבי', 'tzvi': 'צבי',
+  // U
+  'udy': 'אודי', 'uri': 'אורי', 'uriel': 'אוריאל', 'uriya': 'אוריה',
+  // V
+  'victor': 'ויקטור',
+  // Y
+  'yaakov': 'יעקב', 'yacov': 'יעקב', 'yael': 'יעל', 'yair': 'יאיר',
+  'yaki': 'יאקי', 'yanai': 'ינאי', 'yaniv': 'יניב', 'yarden': 'ירדן',
+  'yariv': 'יריב', 'yaron': 'ירון', 'yashar': 'ישר', 'yechezkel': 'יחזקאל',
+  'yechiel': 'יחיאל', 'yedidya': 'ידידיה', 'yehonatan': 'יהונתן', 'yehoshua': 'יהושע',
+  'yehuda': 'יהודה', 'yiftach': 'יפתח', 'yigal': 'יגאל', 'yinon': 'ינון',
+  'yishai': 'ישי', 'yisrael': 'ישראל', 'yitzchak': 'יצחק', 'yoav': 'יואב',
+  'yochai': 'יוחאי', 'yoel': 'יואל', 'yom-tov': 'יום טוב', 'yonatan': 'יונתן',
+  'yoni': 'יוני', 'yosef': 'יוסף', 'yoseph': 'יוסף', 'yossi': 'יוסי',
+  'yosi': 'יוסי', 'yotam': 'יותם', 'yuval': 'יובל',
+  // Z
+  'zach': 'זק', 'zack': 'זק', 'zakhar': 'זכר', 'zeev': 'זאב',
+  'zev': 'זאב', 'ziv': 'זיו', 'zohar': 'זוהר',
+  
+  // ============================================
+  // FEMALE NAMES - Comprehensive List
+  // ============================================
+  // A
+  'abigail': 'אביגיל', 'avigail': 'אביגיל', 'adel': 'אדל', 'adele': 'אדל',
+  'adi': 'עדי', 'adina': 'עדינה', 'adva': 'אדוה', 'agam': 'אגם',
+  'ahinoam': 'אחינועם', 'aliza': 'עליזה', 'alma': 'אלמה', 'almog': 'אלמוג',
+  'alon': 'אלונה', 'alona': 'אלונה', 'amit': 'עמית', 'amira': 'אמירה',
+  'ana': 'אנה', 'anat': 'ענת', 'anna': 'אנה', 'anya': 'אניה',
+  'ariela': 'אריאלה', 'ariella': 'אריאלה', 'avigayil': 'אביגיל', 'avital': 'אביטל',
+  'aviva': 'אביבה', 'ayala': 'איילה', 'ayelet': 'איילת',
+  // B
+  'bar': 'בר', 'bat': 'בת', 'bat-el': 'בת אל', 'batel': 'בתאל',
+  'batsheva': 'בת שבע', 'batya': 'בתיה', 'bianca': 'ביאנקה',
+  // C
+  'carmel': 'כרמל', 'carmela': 'כרמלה', 'carmit': 'כרמית', 'chana': 'חנה',
+  'chani': 'חני', 'chava': 'חוה', 'chaya': 'חיה', 'chen': 'חן',
+  // D
+  'dafna': 'דפנה', 'dafne': 'דפנה', 'dalia': 'דליה', 'dalya': 'דליה',
+  'dana': 'דנה', 'dani': 'דני', 'daniela': 'דניאלה', 'danielle': 'דניאל',
+  'daphne': 'דפנה', 'dayana': 'דיאנה', 'devora': 'דבורה', 'devorah': 'דבורה',
+  'dikla': 'דיקלה', 'dina': 'דינה', 'dinah': 'דינה', 'dorin': 'דורין',
+  'dorit': 'דורית', 'dror': 'דרור', 'drora': 'דרורה',
+  // E
+  'eden': 'עדן', 'edna': 'עדנה', 'efrat': 'אפרת', 'einat': 'עינת',
+  'ela': 'אלה', 'elana': 'אילנה', 'elena': 'אלנה', 'eli': 'אלי',
+  'eliana': 'אליאנה', 'elinor': 'אלינור', 'elisa': 'אליסה', 'elisheva': 'אלישבע',
+  'ella': 'אלה', 'emily': 'אמילי', 'emma': 'אמה', 'esti': 'אסתי',
+  'esther': 'אסתר', 'eva': 'אווה',
+  // G
+  'gal': 'גל', 'gali': 'גלי', 'galia': 'גליה', 'galit': 'גלית',
+  'gefen': 'גפן', 'geula': 'גאולה', 'gila': 'גילה', 'gili': 'גילי',
+  'gitit': 'גיטית',
+  // H
+  'hadas': 'הדס', 'hadasa': 'הדסה', 'hadass': 'הדס', 'hadar': 'הדר',
+  'hagit': 'חגית', 'hana': 'חנה', 'hanna': 'חנה', 'hannah': 'חנה',
+  'hela': 'הלה', 'helen': 'הלן', 'hila': 'הילה', 'hilla': 'הילה',
+  // I
+  'idit': 'עידית', 'ido': 'עידו', 'ila': 'אילה', 'ilana': 'אילנה',
+  'ilanit': 'אילנית', 'inbal': 'ענבל', 'inbar': 'ענבר', 'iris': 'איריס',
+  'irit': 'עירית', 'irit': 'אירית',
+  // J
+  'jennifer': 'ג\'ניפר', 'jenny': 'ג\'ני', 'jessica': 'ג\'סיקה', 'judith': 'יהודית',
+  'julia': 'יוליה', 'julie': 'ג\'ולי',
+  // K
+  'karen': 'קרן', 'karin': 'קרין', 'karmit': 'כרמית', 'kelila': 'כלילה',
+  'keren': 'קרן', 'keshet': 'קשת', 'kinneret': 'כנרת',
+  // L
+  'lee': 'לי', 'liat': 'ליאת', 'liba': 'ליבא', 'libby': 'ליבי',
+  'libi': 'ליבי', 'liel': 'ליאל', 'lila': 'לילה', 'lili': 'לילי',
+  'lilach': 'לילך', 'lilit': 'לילית', 'lilly': 'לילי', 'limor': 'לימור',
+  'lina': 'לינה', 'linoy': 'לינוי', 'liora': 'ליאורה', 'liraz': 'לירז',
+  'liran': 'לירן', 'liron': 'לירון', 'livnat': 'לבנת', 'livya': 'ליביה',
+  'liya': 'ליה', 'liz': 'ליז',
+  // M
+  'maayan': 'מעיין', 'maia': 'מאיה', 'malka': 'מלכה', 'malkah': 'מלכה',
+  'malki': 'מלכי', 'maya': 'מאיה', 'meital': 'מיטל', 'merav': 'מירב',
+  'meytal': 'מיטל', 'mia': 'מיה', 'michal': 'מיכל', 'michal': 'מיכל',
+  'mika': 'מיקה', 'mili': 'מילי', 'mira': 'מירה', 'miriam': 'מרים',
+  'miri': 'מירי', 'moriah': 'מוריה', 'mor': 'מור', 'moran': 'מורן',
+  // N
+  'na\'ama': 'נעמה', 'naama': 'נעמה', 'nadia': 'נדיה', 'nava': 'נאוה',
+  'navit': 'נאוית', 'nechama': 'נחמה', 'nelly': 'נלי', 'neta': 'נטע',
+  'nili': 'נילי', 'nina': 'נינה', 'nira': 'נירה', 'nirit': 'נירית',
+  'nitsa': 'ניצה', 'nitza': 'ניצה', 'noa': 'נועה', 'noah': 'נועה',
+  'nofar': 'נופר', 'noga': 'נוגה', 'nomi': 'נעמי', 'naomi': 'נעמי',
+  'nurit': 'נורית',
+  // O
+  'ofir': 'אופיר', 'ofra': 'עפרה', 'ophir': 'אופיר', 'ophira': 'אופירה',
+  'ophra': 'עפרה', 'ora': 'אורה', 'orah': 'אורה', 'orit': 'אורית',
+  'orly': 'אורלי', 'orna': 'אורנה', 'ortal': 'אורטל', 'osnat': 'אסנת',
+  // P
+  'pearl': 'פרל', 'pnina': 'פנינה',
+  // R
+  'rachel': 'רחל', 'racheli': 'רחלי', 'rina': 'רינה', 'rinat': 'רינת',
+  'rivka': 'רבקה', 'rivki': 'ריבקי', 'romi': 'רומי', 'rona': 'רונה',
+  'roni': 'רוני', 'ronit': 'רונית', 'rotem': 'רותם', 'ruth': 'רות',
+  'ruti': 'רותי',
+  // S
+  'sahar': 'סהר', 'sapir': 'ספיר', 'sara': 'שרה', 'sarah': 'שרה',
+  'sari': 'שרי', 'shaked': 'שקד', 'shani': 'שני', 'sharon': 'שרון',
+  'sharone': 'שרון', 'sheli': 'שלי', 'shelly': 'שלי', 'shir': 'שיר',
+  'shira': 'שירה', 'shirel': 'שירל', 'shirley': 'שירלי', 'shlomit': 'שלומית',
+  'shulamit': 'שולמית', 'sigal': 'סיגל', 'sigalit': 'סיגלית', 'simcha': 'שמחה',
+  'sivan': 'סיון', 'stav': 'סתו', 'stavi': 'סתווי', 'svetlana': 'סבטלנה',
+  // T
+  'tal': 'טל', 'tali': 'טלי', 'talia': 'טליה', 'talya': 'טליה',
+  'tamar': 'תמר', 'tamara': 'תמרה', 'tehila': 'תהילה', 'tehilla': 'תהילה',
+  'tirtza': 'תרצה', 'tova': 'טובה', 'tzipi': 'ציפי', 'tzipora': 'ציפורה',
+  // V
+  'varda': 'ורדה', 'vered': 'ורד', 'victoria': 'ויקטוריה',
+  // Y
+  'yael': 'יעל', 'yaeli': 'יעלי', 'yaara': 'יערה', 'yafit': 'יפית',
+  'yamit': 'ימית', 'yarden': 'ירדן', 'yardena': 'ירדנה', 'yifat': 'יפעת',
+  'yisca': 'יסכה', 'yiskah': 'יסכה', 'yochi': 'יוכי', 'yocheved': 'יוכבד',
+  'yonat': 'יונת', 'yonit': 'יונית',
+  // Z
+  'zahava': 'זהבה', 'zehava': 'זהבה', 'ziona': 'ציונה', 'ziva': 'זיוה',
+  'zohar': 'זוהר', 'zvia': 'צביה'
 };
 
 /**
  * English to Hebrew surname mapping (Story 6.5)
  */
 const ENGLISH_TO_HEBREW_SURNAMES = {
-  'cohen': 'כהן', 'kohen': 'כהן', 'koen': 'כהן',
-  'levi': 'לוי', 'levy': 'לוי', 'levin': 'לוין',
-  'mizrachi': 'מזרחי', 'mizrahi': 'מזרחי',
-  'peretz': 'פרץ', 'perez': 'פרץ',
-  'biton': 'ביטון', 'bitton': 'ביטון',
-  'dahan': 'דהן', 'dhan': 'דהן',
-  'abraham': 'אברהם', 'abrahami': 'אברהמי',
-  'friedman': 'פרידמן', 'freedman': 'פרידמן',
-  'shalom': 'שלום', 'shlomo': 'שלמה',
-  'golan': 'גולן', 'alon': 'אלון',
+  // ============================================
+  // TOP 10 MOST COMMON ISRAELI SURNAMES
+  // ============================================
+  'cohen': 'כהן', 'kohen': 'כהן', 'koen': 'כהן', 'kohn': 'כהן', 'coen': 'כהן',
+  'levi': 'לוי', 'levy': 'לוי', 'levin': 'לוין', 'levine': 'לוין', 'levinson': 'לוינסון',
+  'mizrachi': 'מזרחי', 'mizrahi': 'מזרחי', 'mizrachi': 'מזרחי',
+  'peretz': 'פרץ', 'perez': 'פרץ', 'perec': 'פרץ',
+  'biton': 'ביטון', 'bitton': 'ביטון', 'bitan': 'ביתן',
+  'dahan': 'דהן', 'dhan': 'דהן', 'dehan': 'דהן',
+  'avraham': 'אברהם', 'abraham': 'אברהם', 'abrahami': 'אברהמי', 'avrahami': 'אברהמי',
+  'friedman': 'פרידמן', 'freedman': 'פרידמן', 'fridman': 'פרידמן',
+  'yosef': 'יוסף', 'joseph': 'יוסף', 'yoseph': 'יוסף', 'yossefi': 'יוספי',
+  'amar': 'עמר', 'ammar': 'עמר',
+  
+  // ============================================
+  // SEPHARDIC / MIZRACHI SURNAMES
+  // ============================================
+  'azulay': 'אזולאי', 'azoulay': 'אזולאי', 'azulai': 'אזולאי',
+  'abergel': 'אברג\'ל', 'aberjel': 'אברג\'ל',
+  'abitbol': 'אביטבול', 'abitbul': 'אביטבול',
+  'abukasis': 'אבוקסיס', 'abukaysis': 'אבוקסיס',
+  'abutbul': 'אבוטבול', 'aboutboul': 'אבוטבול',
+  'adari': 'אדרי', 'aderi': 'אדרי', 'edri': 'אדרי', 'edry': 'אדרי',
+  'alfasi': 'אלפסי', 'alpasi': 'אלפסי',
+  'amar': 'עמר', 'ammar': 'עמר',
+  'amsalem': 'אמסלם', 'amselem': 'אמסלם',
+  'assouline': 'אסולין', 'assulin': 'אסולין',
+  'atias': 'עטיאס', 'attias': 'עטיאס', 'attiya': 'עטיה',
+  'benaroch': 'בן ארוש', 'benarroch': 'בן ארוש',
+  'benaim': 'בן אאים', 'benayim': 'בן אאים',
+  'benshlomo': 'בן שלמה', 'ben-shlomo': 'בן שלמה',
+  'bensimon': 'בן סימון', 'ben-simon': 'בן סימון',
+  'buzaglo': 'בוזגלו', 'bouzaglo': 'בוזגלו',
+  'dayan': 'דיין', 'dayyan': 'דיין',
+  'elbaz': 'אלבז', 'albaz': 'אלבז',
+  'elmaliach': 'אלמליח', 'elmaleh': 'אלמליח',
+  'gamliel': 'גמליאל', 'gamlial': 'גמליאל',
+  'gabay': 'גבאי', 'gabbay': 'גבאי', 'gabai': 'גבאי',
+  'hadad': 'חדד', 'haddad': 'חדד',
+  'haim': 'חיים', 'haym': 'חיים', 'chaim': 'חיים', 'hayim': 'חיים',
+  'hamu': 'חמו', 'hamou': 'חמו',
+  'harosh': 'הרוש', 'haroush': 'הרוש',
+  'hasson': 'חסון', 'hason': 'חסון', 'hassan': 'חסן',
+  'hazut': 'חזות', 'hazout': 'חזות',
+  'ifergan': 'יפרגן', 'ifergane': 'יפרגן',
+  'kadosh': 'קדוש', 'kadush': 'קדוש',
+  'knafo': 'כנאפו', 'knafou': 'כנאפו',
+  'mamane': 'ממנה', 'maman': 'ממן',
+  'malka': 'מלכה', 'malca': 'מלכה', 'malchi': 'מלכי',
+  'madar': 'מדר', 'maddar': 'מדר',
+  'muyal': 'מויאל', 'moyal': 'מויאל',
+  'nahon': 'נחון', 'nachon': 'נחון',
+  'naim': 'נאים', 'naeem': 'נאים', 'nahim': 'נחים',
+  'ohayon': 'אוחיון', 'ohaion': 'אוחיון', 'ohayan': 'אוחיון',
+  'ohana': 'אוחנה', 'ochana': 'אוחנה',
+  'saban': 'סבן', 'sabban': 'סבן',
+  'sabag': 'סבג', 'sabbag': 'סבג', 'sebag': 'סבג',
+  'sarusi': 'סרוסי', 'sarussi': 'סרוסי',
+  'shirazi': 'שירזי', 'shirazee': 'שירזי',
+  'shitrit': 'שטרית', 'chitrit': 'שטרית',
+  'suissa': 'סויסה', 'swisa': 'סויסה', 'swissa': 'סויסה',
+  'vaknin': 'וקנין', 'waknin': 'וקנין',
+  'yaacobi': 'יעקובי', 'yacobi': 'יעקובי', 'jacobi': 'יעקובי',
+  
+  // ============================================
+  // ASHKENAZI SURNAMES
+  // ============================================
+  'adler': 'אדלר', 'adelr': 'אדלר',
+  'applebaum': 'אפלבאום', 'appelbaum': 'אפלבאום',
+  'becker': 'בקר', 'bekker': 'בקר',
+  'berg': 'ברג', 'berger': 'ברגר',
+  'bernstein': 'ברנשטיין', 'bornstein': 'בורנשטיין',
+  'blau': 'בלאו', 'blau': 'בלאו',
+  'blum': 'בלום', 'bloom': 'בלום',
+  'braun': 'בראון', 'brown': 'בראון',
+  'dreyfus': 'דרייפוס', 'dreyfuss': 'דרייפוס',
+  'ehrlich': 'ארליך', 'erlich': 'ארליך',
+  'einstein': 'איינשטיין', 'einstien': 'איינשטיין',
+  'feinberg': 'פיינברג', 'fineberg': 'פיינברג',
+  'feldman': 'פלדמן', 'feltman': 'פלדמן',
+  'fink': 'פינק', 'finke': 'פינק',
+  'fischer': 'פישר', 'fisher': 'פישר',
+  'frank': 'פרנק', 'frankel': 'פרנקל',
+  'geller': 'גלר', 'gellar': 'גלר',
+  'ginsburg': 'גינזבורג', 'ginzburg': 'גינזבורג',
+  'glass': 'גלס', 'glaser': 'גלזר',
+  'gold': 'גולד', 'golden': 'גולדן',
+  'goldberg': 'גולדברג', 'goldberger': 'גולדברגר',
+  'goldman': 'גולדמן', 'goldmann': 'גולדמן',
+  'goldstein': 'גולדשטיין', 'goldstien': 'גולדשטיין',
+  'gordon': 'גורדון', 'gorden': 'גורדון',
+  'green': 'גרין', 'greene': 'גרין', 'grin': 'גרין',
+  'greenberg': 'גרינברג', 'greenberg': 'גרינברג',
+  'gross': 'גרוס', 'grosz': 'גרוס',
+  'grossman': 'גרוסמן', 'grosman': 'גרוסמן',
+  'gutman': 'גוטמן', 'guttman': 'גוטמן',
+  'heller': 'הלר', 'hellar': 'הלר',
+  'herman': 'הרמן', 'hermann': 'הרמן',
+  'hirsch': 'הירש', 'hirsh': 'הירש',
+  'hoffman': 'הופמן', 'hofman': 'הופמן',
+  'horowitz': 'הורוביץ', 'hurwitz': 'הורוביץ',
+  'jacobson': 'יעקבסון', 'jacobsen': 'יעקבסון',
+  'kaplan': 'קפלן', 'caplan': 'קפלן',
+  'katz': 'כץ', 'kac': 'כץ', 'kaz': 'כץ',
+  'kaufman': 'קאופמן', 'kaufmann': 'קאופמן',
+  'klein': 'קליין', 'kline': 'קליין',
+  'kolodny': 'קולודני', 'kolodni': 'קולודני',
+  'korn': 'קורן', 'koren': 'קורן',
+  'kramer': 'קרמר', 'kraemer': 'קרמר',
+  'landau': 'לנדאו', 'lando': 'לנדו',
+  'lehrer': 'לרר', 'lerer': 'לרר',
+  'lerner': 'לרנר', 'learner': 'לרנר',
+  'lipman': 'ליפמן', 'lippman': 'ליפמן',
+  'loewenstein': 'לוונשטיין', 'lowenstein': 'לוונשטיין',
+  'mandel': 'מנדל', 'mendel': 'מנדל',
+  'marcus': 'מרקוס', 'markus': 'מרקוס',
+  'meir': 'מאיר', 'meyer': 'מאיר', 'mayer': 'מאיר',
+  'mendelsohn': 'מנדלסון', 'mendelson': 'מנדלסון',
+  'miller': 'מילר', 'muller': 'מילר',
+  'novak': 'נובק', 'nowak': 'נובק',
+  'perlman': 'פרלמן', 'pearlman': 'פרלמן',
+  'rabinovitch': 'רבינוביץ', 'rabinovich': 'רבינוביץ', 'rabinowitz': 'רבינוביץ',
+  'rosen': 'רוזן', 'rozen': 'רוזן',
+  'rosenberg': 'רוזנברג', 'rozenberg': 'רוזנברג',
+  'rosenfeld': 'רוזנפלד', 'rozenfeld': 'רוזנפלד',
+  'rosenthal': 'רוזנטל', 'rozenthal': 'רוזנטל',
+  'rothenberg': 'רוטנברג', 'rottenberg': 'רוטנברג',
+  'rothschild': 'רוטשילד', 'rotschild': 'רוטשילד',
+  'rubin': 'רובין', 'rubinstein': 'רובינשטיין',
+  'schneider': 'שניידר', 'snyder': 'סניידר',
+  'schultz': 'שולץ', 'shultz': 'שולץ',
+  'schwartz': 'שוורץ', 'shwartz': 'שוורץ', 'schwarz': 'שוורץ',
+  'segal': 'סגל', 'siegel': 'סיגל',
+  'shapira': 'שפירא', 'shapiro': 'שפירא', 'schapiro': 'שפירא',
+  'shulman': 'שולמן', 'schulman': 'שולמן',
+  'silber': 'זילבר', 'silver': 'סילבר', 'zilber': 'זילבר',
+  'simon': 'סימון', 'shimon': 'שמעון',
+  'singer': 'זינגר', 'sanger': 'זינגר',
+  'spector': 'ספקטור', 'spektor': 'ספקטור',
+  'stein': 'שטיין', 'stien': 'שטיין',
+  'steinberg': 'שטיינברג', 'stenberg': 'שטיינברג',
+  'stern': 'שטרן', 'sterne': 'שטרן',
+  'strauss': 'שטראוס', 'straus': 'שטראוס',
+  'vogel': 'פוגל', 'fogel': 'פוגל',
+  'waxman': 'וקסמן', 'vaxman': 'וקסמן',
+  'weiner': 'ויינר', 'wiener': 'ויינר',
+  'weinberg': 'ויינברג', 'weinberg': 'ויינברג',
+  'weinstein': 'ויינשטיין', 'wiensten': 'ויינשטיין',
+  'weiss': 'וייס', 'weis': 'וייס', 'wise': 'וייס',
+  'weissman': 'וייסמן', 'wiseman': 'וייסמן',
+  'wolf': 'וולף', 'wolff': 'וולף',
+  'zimmerman': 'צימרמן', 'zimmermann': 'צימרמן',
+  
+  // ============================================
+  // HEBREW / ISRAELI MODERN SURNAMES
+  // ============================================
+  'akiva': 'עקיבא', 'akiba': 'עקיבא',
+  'alon': 'אלון', 'aloni': 'אלוני', 'ilan': 'אילן', 'ilani': 'אילני',
+  'amit': 'עמית', 'amiti': 'עמיתי',
+  'ariel': 'אריאל', 'ariely': 'אריאלי',
+  'bar': 'בר', 'bar-on': 'בר און', 'baron': 'בר און',
+  'barkai': 'ברקאי', 'barkay': 'ברקאי',
+  'baruch': 'ברוך', 'boruch': 'ברוך',
+  'ben-ami': 'בן עמי', 'benami': 'בן עמי',
+  'ben-ari': 'בן ארי', 'benari': 'בן ארי',
   'ben-david': 'בן דוד', 'bendavid': 'בן דוד',
-  'yosef': 'יוסף', 'joseph': 'יוסף',
-  'chaim': 'חיים', 'haim': 'חיים', 'hayim': 'חיים',
-  'rosenberg': 'רוזנברג', 'shapira': 'שפירא', 'shapiro': 'שפירא',
-  'israeli': 'ישראלי', 'goldberg': 'גולדברג', 'green': 'גרין',
-  'akiva': 'עקיבא', 'david': 'דוד'
+  'ben-haim': 'בן חיים', 'benhaim': 'בן חיים',
+  'ben-moshe': 'בן משה', 'benmoshe': 'בן משה',
+  'ben-shlomo': 'בן שלמה', 'benshlomo': 'בן שלמה',
+  'ben-yosef': 'בן יוסף', 'benyosef': 'בן יוסף',
+  'ben-zvi': 'בן צבי', 'benzvi': 'בן צבי',
+  'binyamin': 'בנימין', 'benjamin': 'בנימין',
+  'carmeli': 'כרמלי', 'karmi': 'כרמי', 'carmi': 'כרמי',
+  'carmel': 'כרמל', 'karmel': 'כרמל',
+  'david': 'דוד', 'davidoff': 'דוידוף',
+  'dor': 'דור', 'dori': 'דורי', 'doron': 'דורון',
+  'eldar': 'אלדר', 'eldad': 'אלדד',
+  'eliahu': 'אליהו', 'eliyahu': 'אליהו', 'elyahu': 'אליהו',
+  'even': 'אבן', 'even-chen': 'אבן חן', 'evenchen': 'אבן חן',
+  'gabriel': 'גבריאל', 'gavriel': 'גבריאל', 'gavrieli': 'גבריאלי',
+  'gal': 'גל', 'gali': 'גלי',
+  'gilad': 'גלעד', 'giladi': 'גלעדי',
+  'golan': 'גולן', 'golani': 'גולני',
+  'gur': 'גור', 'guri': 'גורי',
+  'hadar': 'הדר', 'hadari': 'הדרי',
+  'harel': 'הראל', 'hareli': 'הראלי',
+  'herzl': 'הרצל', 'hertzel': 'הרצל',
+  'israeli': 'ישראלי', 'yisraeli': 'ישראלי',
+  'keren': 'קרן', 'karni': 'קרני',
+  'kaspi': 'כספי', 'kesef': 'כסף',
+  'lavi': 'לביא', 'lavy': 'לביא',
+  'lavie': 'לביא', 'lavia': 'לביא',
+  'livne': 'לבנה', 'livni': 'לבני',
+  'melamed': 'מלמד', 'melamid': 'מלמד',
+  'mor': 'מור', 'mori': 'מורי',
+  'navon': 'נבון', 'navoni': 'נבוני',
+  'naor': 'נאור', 'naori': 'נאורי',
+  'nir': 'ניר', 'niri': 'נירי',
+  'paz': 'פז', 'pazi': 'פזי',
+  'rabin': 'רבין', 'rabini': 'רביני',
+  'ran': 'רן', 'rani': 'רני',
+  'raz': 'רז', 'razi': 'רזי',
+  'ron': 'רון', 'roni': 'רוני',
+  'shaked': 'שקד', 'shakedi': 'שקדי',
+  'shalom': 'שלום', 'shalomi': 'שלומי',
+  'shamir': 'שמיר', 'shamiri': 'שמירי',
+  'sharon': 'שרון', 'sharoni': 'שרוני',
+  'shlomo': 'שלמה', 'shlomi': 'שלומי',
+  'shoham': 'שוהם', 'shohami': 'שוהמי',
+  'tal': 'טל', 'tali': 'טלי',
+  'tamir': 'תמיר', 'tamiri': 'תמירי',
+  'tov': 'טוב', 'tovi': 'טובי',
+  'tzur': 'צור', 'zur': 'צור', 'zuri': 'צורי',
+  'yadin': 'ידין', 'yadlin': 'ידלין',
+  'yaffe': 'יפה', 'yaffee': 'יפה', 'jaffa': 'יפו',
+  'yaniv': 'יניב', 'yanivi': 'יניבי',
+  'zohar': 'זוהר', 'zohari': 'זוהרי',
+  'ziv': 'זיו', 'zivi': 'זיוי'
 };
 
 /**
@@ -892,8 +1289,19 @@ export function generateActivityFeed(referrals, random) {
 }
 
 /**
+ * Capitalizes the first letter of a string
+ * @param {string} str - String to capitalize
+ * @returns {string} Capitalized string
+ */
+function capitalize(str) {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+/**
  * Generates a complete user object from email using seeded random (Story 6.5 AC1)
  * Same email always produces identical user data (deterministic)
+ * Uses the REAL name from the email (not generated Hebrew names)
  * @param {string} email - User email (e.g., firstname.lastname@passportcard.co.il)
  * @returns {Object} Generated user object with referrals, stamps, activities
  */
@@ -903,12 +1311,16 @@ export function generateUserFromEmail(email) {
   // Parse email to extract name parts
   const [namePart] = email.split('@');
   const nameParts = namePart.split('.');
-  const englishFirstName = nameParts[0] || '';
-  const englishLastName = nameParts[1] || nameParts[0];
+  const rawFirstName = nameParts[0] || '';
+  const rawLastName = nameParts[1] || '';
   
-  // Generate Hebrew name from email parts (AC1)
-  const hebrewFirstName = getHebrewFirstName(englishFirstName, random);
-  const hebrewLastName = getHebrewSurname(englishLastName, random);
+  // Translate first name to Hebrew if mapping exists, otherwise use capitalized English
+  // Example: ben.akiva@company.com → "בן עקיבא" (if mappings exist)
+  const hebrewFirstName = getHebrewFirstName(rawFirstName, random);
+  const hebrewLastName = getHebrewSurname(rawLastName, random);
+  const firstName = hebrewFirstName;
+  const lastName = hebrewLastName;
+  const fullName = lastName ? `${firstName} ${lastName}` : firstName;
   
   // Generate join date: 1-3 years ago (AC1)
   const joinDate = generateJoinDate(random);
@@ -942,15 +1354,15 @@ export function generateUserFromEmail(email) {
   return {
     id: userId,
     email: email,
-    firstName: hebrewFirstName,
-    lastName: hebrewLastName,
-    fullName: `${hebrewFirstName} ${hebrewLastName}`,
+    firstName: firstName,
+    lastName: lastName,
+    fullName: fullName,
     department: department,
     points: totalPoints,
     level: levelInfo.name,
     levelInfo: levelInfo,
     joinDate: joinDate,
-    avatarInitial: hebrewFirstName[0],
+    avatarInitial: firstName[0] || '?',
     referrals: referrals,
     stamps: stamps,
     activities: activities,

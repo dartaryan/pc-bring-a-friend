@@ -47,7 +47,7 @@ export class DashboardComponent extends Component {
       <div class="app-layout">
         <main class="dashboard page-content">
           <section class="dashboard__greeting">
-            <h1 class="dashboard__title">שלום ${firstName}! ${renderIcon('hand-stop')}</h1>
+            <h1 class="dashboard__title">שלום ${firstName}!</h1>
           </section>
           
           <section class="dashboard__stats">

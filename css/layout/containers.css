@@ -14,7 +14,7 @@
 /* Toast notification container */
 #toast-container {
   position: fixed;
-  top: var(--space-4);
+  top: calc(60px + var(--space-4)); /* Below fixed header */
   left: var(--space-4);
   right: var(--space-4);
   z-index: var(--z-toast);
@@ -54,6 +54,7 @@ body.has-nav {
 body.has-sidebar {
   /* RTL: margin on right for sidebar (inline-start = right in RTL) */
   margin-inline-start: 240px;
+  transition: margin var(--duration-normal) var(--ease-default);
 }
 
 /* Mobile - no sidebar margin */
@@ -80,9 +81,21 @@ body.has-sidebar {
 
 /* App Layout - Main wrapper for page content */
 .app-layout {
-  min-height: 100vh;
+  min-height: calc(100vh - 60px); /* Account for fixed header */
   display: flex;
   flex-direction: column;
+}
+
+/* Account for bottom nav on mobile */
+body.has-nav .app-layout {
+  min-height: calc(100vh - 120px); /* 60px header + 60px bottom nav */
+}
+
+/* Desktop - no bottom nav, only header */
+@media (min-width: 1024px) {
+  body.has-nav .app-layout {
+    min-height: calc(100vh - 60px); /* Only header on desktop */
+  }
 }
 
 /* Page Content - Inner content wrapper */
@@ -102,9 +115,16 @@ body.has-sidebar {
 
 /* Header container */
 #header-container {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: var(--z-header);
+}
+
+/* Body padding to account for fixed header */
+body.has-header {
+  padding-top: 60px; /* Same as header height */
 }
 
 /* Navigation container */

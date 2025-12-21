@@ -153,12 +153,13 @@ export class App {
   }
   
   /**
-   * Sets up event delegation on app, header, and nav containers
+   * Sets up event delegation on app, header, nav, and modal containers
    */
   _setupEventDelegation() {
     const appContainer = document.getElementById('main-content');
     const headerContainer = document.getElementById('header-container');
     const navContainer = document.getElementById('nav-container');
+    const modalContainer = document.getElementById('modal-container');
     
     if (!appContainer) {
       console.error('App: #main-content container not found');
@@ -207,6 +208,11 @@ export class App {
           }
         }
       });
+    }
+    
+    // Modal container - needed for share panel and other modal actions
+    if (modalContainer) {
+      modalContainer.addEventListener('click', handleClick);
     }
     
     // Form submission delegation
@@ -561,6 +567,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
+  // Register toggle sidebar action handler
+  app.registerAction('toggle-sidebar', () => {
+    const headerComponent = navigationManager.getHeaderComponent();
+    if (headerComponent) {
+      headerComponent.toggleSidebar();
+    }
+  });
+  
   // Register toggle notifications action handler
   app.registerAction('toggle-notifications', (target) => {
     const current = stateManager.getState('emailNotifications') !== false;
@@ -740,46 +754,82 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Passport page navigation - Next page (Story 3.3)
-  // FIX Story 7.6: Added event parameter and stopPropagation to prevent bubbling
+  // Opens passport if closed, navigates forward, or closes on last page
   app.registerAction('passport-next', async (target, event) => {
     if (event) event.stopPropagation();
     
-    // First open passport if it's closed
     const passportEl = document.querySelector('.passport');
+    const passportComponent = app.getComponent('PassportComponent');
+    
+    // If passport is closed, open it
     if (passportEl && !passportEl.classList.contains('passport--open')) {
       await animationService.animatePassportOpen(passportEl);
       stateManager.setState({ passportOpen: true });
-      const passportComponent = app.getComponent('PassportComponent');
       if (passportComponent && passportComponent.updatePassportState) {
         passportComponent.updatePassportState(true);
       }
+      return;
     }
     
-    const passportComponent = app.getComponent('PassportComponent');
-    if (passportComponent && passportComponent.navigateNext) {
-      await passportComponent.navigateNext();
+    // If on last page, close the passport
+    if (passportComponent) {
+      const { currentPage, totalPages } = passportComponent.passportState;
+      const stamps = stateManager?.getState('stamps') || [];
+      const actualTotalPages = passportComponent._getTotalPagesForViewport(stamps);
+      
+      if (currentPage >= actualTotalPages - 1) {
+        // Close passport
+        if (passportEl) {
+          await animationService.animatePassportClose(passportEl);
+          stateManager.setState({ passportOpen: false });
+          passportComponent.updatePassportState(false);
+        }
+        return;
+      }
+      
+      // Navigate to next page
+      if (passportComponent.navigateNext) {
+        await passportComponent.navigateNext();
+      }
     }
   });
 
   // Passport page navigation - Previous page (Story 3.3)
-  // FIX Story 7.6: Added event parameter and stopPropagation to prevent bubbling
+  // Opens passport if closed, navigates backward, or closes on first page
   app.registerAction('passport-prev', async (target, event) => {
     if (event) event.stopPropagation();
     
-    // First open passport if it's closed
     const passportEl = document.querySelector('.passport');
+    const passportComponent = app.getComponent('PassportComponent');
+    
+    // If passport is closed, open it
     if (passportEl && !passportEl.classList.contains('passport--open')) {
       await animationService.animatePassportOpen(passportEl);
       stateManager.setState({ passportOpen: true });
-      const passportComponent = app.getComponent('PassportComponent');
       if (passportComponent && passportComponent.updatePassportState) {
         passportComponent.updatePassportState(true);
       }
+      return;
     }
     
-    const passportComponent = app.getComponent('PassportComponent');
-    if (passportComponent && passportComponent.navigatePrev) {
-      await passportComponent.navigatePrev();
+    // If on first page, close the passport
+    if (passportComponent) {
+      const { currentPage } = passportComponent.passportState;
+      
+      if (currentPage === 0) {
+        // Close passport
+        if (passportEl) {
+          await animationService.animatePassportClose(passportEl);
+          stateManager.setState({ passportOpen: false });
+          passportComponent.updatePassportState(false);
+        }
+        return;
+      }
+      
+      // Navigate to previous page
+      if (passportComponent.navigatePrev) {
+        await passportComponent.navigatePrev();
+      }
     }
   });
   
@@ -862,10 +912,18 @@ document.addEventListener('DOMContentLoaded', () => {
   app.registerAction('open-share-panel', (target) => {
     const positionId = target.dataset.positionId;
     if (!positionId) return;
-    
+
     openSharePanel(positionId);
   });
   
+  // Share position from modal (alternative action name used in position-detail modal)
+  app.registerAction('share-position-modal', (target) => {
+    const positionId = target.dataset.positionId;
+    if (!positionId) return;
+
+    openSharePanel(positionId);
+  });
+
   // Copy referral link to clipboard
   app.registerAction('copy-referral-link', async () => {
     const sharePanel = stateManager.getState('sharePanelInstance');
